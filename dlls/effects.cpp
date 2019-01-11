@@ -683,8 +683,7 @@ void CLightning::StrikeThink( void )
 			{
 				if ( !IsPointEntity( pEnd ) )	// One point entity must be in pEnd
 				{
-					CBaseEntity *pTemp;
-					pTemp = pStart;
+					CBaseEntity* pTemp = pStart;
 					pStart = pEnd;
 					pEnd = pTemp;
 				}
@@ -817,9 +816,7 @@ void CLightning::Zap( const Vector &vecSrc, const Vector &vecDest )
 
 void CLightning::RandomArea( void )
 {
-	int iLoops = 0;
-
-	for (iLoops = 0; iLoops < 10; iLoops++)
+	for (int iLoops = 0; iLoops < 10; iLoops++)
 	{
 		Vector vecSrc = pev->origin;
 
@@ -883,13 +880,10 @@ void CLightning::RandomPoint( Vector &vecSrc )
 
 void CLightning::BeamUpdateVars( void )
 {
-	int beamType;
-	int pointStart, pointEnd;
-
 	edict_t *pStart = FIND_ENTITY_BY_TARGETNAME ( NULL, STRING(m_iszStartEntity) );
 	edict_t *pEnd = FIND_ENTITY_BY_TARGETNAME ( NULL, STRING(m_iszEndEntity) );
-	pointStart = IsPointEntity( CBaseEntity::Instance(pStart) );
-	pointEnd = IsPointEntity( CBaseEntity::Instance(pEnd) );
+	int pointStart = IsPointEntity(CBaseEntity::Instance(pStart));
+	int pointEnd = IsPointEntity(CBaseEntity::Instance(pEnd));
 
 	pev->skin = 0;
 	pev->sequence = 0;
@@ -898,14 +892,13 @@ void CLightning::BeamUpdateVars( void )
 	pev->model = m_iszSpriteName;
 	SetTexture( m_spriteTexture );
 
-	beamType = BEAM_ENTS;
+	int beamType = BEAM_ENTS;
 	if ( pointStart || pointEnd )
 	{
 		if ( !pointStart )	// One point entity must be in pStart
 		{
-			edict_t *pTemp;
 			// Swap start & end
-			pTemp = pStart;
+			edict_t* pTemp = pStart;
 			pStart = pEnd;
 			pEnd = pTemp;
 			int swap = pointStart;
@@ -1273,7 +1266,7 @@ void CSprite::Expand( float scaleSpeed, float fadeSpeed )
 
 void CSprite::ExpandThink( void )
 {
-	float frametime = gpGlobals->time - m_lastTime;
+	const float frametime = gpGlobals->time - m_lastTime;
 	pev->scale += pev->speed * frametime;
 	pev->renderamt -= pev->health * frametime;
 	if ( pev->renderamt <= 0 )
@@ -1329,7 +1322,7 @@ void CSprite::TurnOn( void )
 
 void CSprite::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
-	int on = pev->effects != EF_NODRAW;
+	const int on = pev->effects != EF_NODRAW;
 	if ( ShouldToggle( useType, on ) )
 	{
 		if ( on )
@@ -1665,7 +1658,7 @@ void CTestEffect::TestThink( void )
 		m_pBeam[m_iBeam] = pbeam;
 		m_iBeam++;
 
-#if 0
+//#if 0
 		Vector vecMid = (vecSrc + tr.vecEndPos) * 0.5;
 		MESSAGE_BEGIN( MSG_BROADCAST, SVC_TEMPENTITY );
 			WRITE_BYTE(TE_DLIGHT);
@@ -1679,7 +1672,7 @@ void CTestEffect::TestThink( void )
 			WRITE_BYTE( 20 );		// time * 10
 			WRITE_BYTE( 0 );		// decay * 0.1
 		MESSAGE_END( );
-#endif
+//#endif
 	}
 
 	if (t < 3.0)
@@ -2266,3 +2259,54 @@ void CItemSoda::CanTouch ( CBaseEntity *pOther )
 	SetThink ( &CItemSoda::SUB_Remove );
 	pev->nextthink = gpGlobals->time;
 }
+
+//=========================================================
+// Simple studio model
+//=========================================================
+#define SF_ENVSTUDIO_SOLIDBBOX 1
+
+class CEnvStudio : public CBaseEntity
+{
+public:
+	void Spawn();
+	void Precache();
+};
+LINK_ENTITY_TO_CLASS( env_studio, CEnvStudio );
+
+void CEnvStudio::Spawn()
+{
+	Precache();
+
+	SET_MODEL(ENT(pev),	STRING(pev->model));
+
+	//if ( pev->spawnflags & SF_ENVSTUDIO_SOLIDBBOX ) // This doesn't work
+	//{
+	//	pev->solid = SOLID_BBOX;
+	//}
+	//else
+	//{
+	//	pev->solid = SOLID_NOT;
+	//}
+}
+
+void CEnvStudio::Precache()
+{
+	PRECACHE_MODEL((char *)STRING(pev->model));
+}
+
+//=========================================================
+// Testing entity
+//=========================================================
+//class CEnvTest : public CSprite
+//{
+//public:
+//	void Spawn();
+//};
+//
+//LINK_ENTITY_TO_CLASS( env_test, CEnvTest );
+//
+//void CEnvTest::Spawn()
+//{
+//	pev->effects = TE_TAREXPLOSION;
+//}
+

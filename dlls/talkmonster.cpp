@@ -27,7 +27,7 @@
 // Talking monster base class
 // Used for scientists and barneys
 //=========================================================
-float	CTalkMonster::g_talkWaitTime = 0;		// time delay until it's ok to speak: used so that two NPCs don't talk at once
+float	CTalkMonster::g_talkWaitTime = 0.0f;		// time delay until it's ok to speak: used so that two NPCs don't talk at once
 
 // NOTE: m_voicePitch & m_szGrp should be fixed up by precache each save/restore
 
@@ -580,9 +580,7 @@ void CTalkMonster :: RunTask( Task_t *pTask )
 
 	case TASK_WALK_PATH_FOR_UNITS:
 		{
-			float distance;
-
-			distance = (m_vecLastPosition - pev->origin).Length2D();
+			float distance = (m_vecLastPosition - pev->origin).Length2D();
 
 			// Walk path until far enough away
 			if ( distance > pTask->flData || MovementIsComplete() )
@@ -649,11 +647,9 @@ void CTalkMonster :: Killed( entvars_t *pevAttacker, int iGib )
 CBaseEntity	*CTalkMonster::EnumFriends( CBaseEntity *pPrevious, int listNumber, BOOL bTrace )
 {
 	CBaseEntity *pFriend = pPrevious;
-	char *pszFriend;
 	TraceResult tr;
-	Vector vecCheck;
 
-	pszFriend = m_szFriends[ FriendNumber(listNumber) ];
+	char* pszFriend = m_szFriends[FriendNumber(listNumber)];
 	while (pFriend = UTIL_FindEntityByClassname( pFriend, pszFriend ))
 	{
 		if (pFriend == this || !pFriend->IsAlive())
@@ -661,7 +657,7 @@ CBaseEntity	*CTalkMonster::EnumFriends( CBaseEntity *pPrevious, int listNumber, 
 			continue;
 		if ( bTrace )
 		{
-			vecCheck = pFriend->pev->origin;
+			Vector vecCheck = pFriend->pev->origin;
 			vecCheck.z = pFriend->pev->absmax.z;
 
 			UTIL_TraceLine( pev->origin, vecCheck, ignore_monsters, ENT(pev), &tr);
@@ -682,10 +678,9 @@ CBaseEntity	*CTalkMonster::EnumFriends( CBaseEntity *pPrevious, int listNumber, 
 void CTalkMonster::AlertFriends( void )
 {
 	CBaseEntity *pFriend = NULL;
-	int i;
 
 	// for each friend in this bsp...
-	for ( i = 0; i < TLK_CFRIENDS; i++ )
+	for ( int i = 0; i < TLK_CFRIENDS; i++ )
 	{
 		while (pFriend = EnumFriends( pFriend, i, TRUE ))
 		{
@@ -704,10 +699,9 @@ void CTalkMonster::AlertFriends( void )
 void CTalkMonster::ShutUpFriends( void )
 {
 	CBaseEntity *pFriend = NULL;
-	int i;
 
 	// for each friend in this bsp...
-	for ( i = 0; i < TLK_CFRIENDS; i++ )
+	for ( int i = 0; i < TLK_CFRIENDS; i++ )
 	{
 		while (pFriend = EnumFriends( pFriend, i, TRUE ))
 		{
@@ -726,11 +720,10 @@ void CTalkMonster::ShutUpFriends( void )
 void CTalkMonster::LimitFollowers( CBaseEntity *pPlayer, int maxFollowers )
 {
 	CBaseEntity *pFriend = NULL;
-	int i, count;
 
-	count = 0;
+	int count = 0;
 	// for each friend in this bsp...
-	for ( i = 0; i < TLK_CFRIENDS; i++ )
+	for ( int i = 0; i < TLK_CFRIENDS; i++ )
 	{
 		while (pFriend = EnumFriends( pFriend, i, FALSE ))
 		{
@@ -807,7 +800,6 @@ CBaseEntity *CTalkMonster :: FindNearestFriend(BOOL fPlayer)
 	TraceResult tr;
 	Vector vecStart = pev->origin;
 	Vector vecCheck;
-	int i;
 	char *pszFriend;
 	int cfriends;
 
@@ -820,7 +812,7 @@ CBaseEntity *CTalkMonster :: FindNearestFriend(BOOL fPlayer)
 
 	// for each type of friend...
 
-	for (i = cfriends-1; i > -1; i--)
+	for (int i = cfriends - 1; i > -1; i--)
 	{
 		if (fPlayer)
 			pszFriend = "player";
@@ -1024,9 +1016,7 @@ void CTalkMonster :: IdleHeadTurn( Vector &vecFriend )
 // ask question of nearby friend, or make statement
 //=========================================================
 int CTalkMonster :: FIdleSpeak ( void )
-{ 
-	// try to start a conversation, or make statement
-	int pitch;
+{
 	const char *szIdleGroup;
 	const char *szQuestionGroup;
 	float duration;
@@ -1050,8 +1040,6 @@ int CTalkMonster :: FIdleSpeak ( void )
 		duration = RANDOM_FLOAT(2.8, 3.2);
 
 	}
-
-	pitch = GetVoicePitch();
 		
 	// player using this entity is alive and wounded?
 	CBaseEntity *pTarget = m_hTargetEnt;

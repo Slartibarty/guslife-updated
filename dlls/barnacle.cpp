@@ -144,7 +144,6 @@ int CBarnacle::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, floa
 //=========================================================
 void CBarnacle :: BarnacleThink ( void )
 {
-	CBaseEntity *pTouchEnt;
 	CBaseMonster *pVictim;
 	float flLength;
 
@@ -265,7 +264,7 @@ void CBarnacle :: BarnacleThink ( void )
 			}
 		}
 
-		pTouchEnt = TongueTouchEnt( &flLength );
+		CBaseEntity* pTouchEnt = TongueTouchEnt(&flLength);
 
 		if ( pTouchEnt != NULL && m_fTongueExtended )
 		{
@@ -320,14 +319,12 @@ void CBarnacle :: BarnacleThink ( void )
 //=========================================================
 void CBarnacle :: Killed( entvars_t *pevAttacker, int iGib )
 {
-	CBaseMonster *pVictim;
-
 	pev->solid = SOLID_NOT;
 	pev->takedamage = DAMAGE_NO;
 
 	if ( m_hEnemy != NULL )
 	{
-		pVictim = m_hEnemy->MyMonsterPointer();
+		CBaseMonster* pVictim = m_hEnemy->MyMonsterPointer();
 
 		if ( pVictim )
 		{
@@ -394,11 +391,10 @@ void CBarnacle :: Precache()
 CBaseEntity *CBarnacle :: TongueTouchEnt ( float *pflLength )
 {
 	TraceResult	tr;
-	float		length;
 
 	// trace once to hit architecture and see if the tongue needs to change position.
 	UTIL_TraceLine ( pev->origin, pev->origin - Vector ( 0 , 0 , 2048 ), ignore_monsters, ENT(pev), &tr );
-	length = fabs( pev->origin.z - tr.vecEndPos.z );
+	float length = fabs(pev->origin.z - tr.vecEndPos.z);
 	if ( pflLength )
 	{
 		*pflLength = length;

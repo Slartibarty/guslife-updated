@@ -259,11 +259,11 @@ const char **CBreakable::MaterialSoundList( Materials precacheMaterial, int &sou
 void CBreakable::MaterialSoundPrecache( Materials precacheMaterial )
 {
 	const char	**pSoundList;
-	int			i, soundCount = 0;
+	int soundCount = 0;
 
 	pSoundList = MaterialSoundList( precacheMaterial, soundCount );
 
-	for ( i = 0; i < soundCount; i++ )
+	for ( int i = 0; i < soundCount; i++ )
 	{
 		PRECACHE_SOUND( (char *)pSoundList[i] );
 	}
@@ -359,7 +359,6 @@ void CBreakable::DamageSound( void )
 	int pitch;
 	float fvol;
 	char *rgpsz[6];
-	int i;
 	int material = m_Material;
 
 //	if (RANDOM_LONG(0,1))
@@ -374,6 +373,8 @@ void CBreakable::DamageSound( void )
 
 	if (material == matComputer && RANDOM_LONG(0,1))
 		material = matMetal;
+
+	int i{ 0 };
 
 	switch (material)
 	{
@@ -430,7 +431,6 @@ void CBreakable::DamageSound( void )
 
 void CBreakable::BreakTouch( CBaseEntity *pOther )
 {
-	float flDamage;
 	entvars_t*	pevToucher = pOther->pev;
 	
 	// only players can break these right now
@@ -440,8 +440,9 @@ void CBreakable::BreakTouch( CBaseEntity *pOther )
 	}
 
 	if ( FBitSet ( pev->spawnflags, SF_BREAK_TOUCH ) )
-	{// can be broken when run into 
-		flDamage = pevToucher->velocity.Length() * 0.01;
+	{
+		// can be broken when run into 
+		float flDamage = pevToucher->velocity.Length() * 0.01;
 
 		if (flDamage >= pev->health)
 		{

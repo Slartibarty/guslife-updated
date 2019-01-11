@@ -244,9 +244,8 @@ LINK_ENTITY_TO_CLASS( player, CBasePlayer );
 
 void CBasePlayer :: Pain( void )
 {
-	float	flRndSound;//sound randomizer
-
-	flRndSound = RANDOM_FLOAT ( 0 , 1 ); 
+	// Sound randomizer
+	const float flRndSound = RANDOM_FLOAT(0, 1); 
 	
 	if ( flRndSound <= 0.33 )
 		EMIT_SOUND(ENT(pev), CHAN_VOICE, "player/pl_pain5.wav", 1, ATTN_NORM);
@@ -319,11 +318,9 @@ static void ThrowHead(entvars_t *pev, char *szGibModel, floatflDamage)
 
 int TrainSpeed(int iSpeed, int iMax)
 {
-	float fSpeed, fMax;
-	int iRet = 0;
-
-	fMax = (float)iMax;
-	fSpeed = iSpeed;
+	float fMax = (float)iMax;
+	float fSpeed = (float)iSpeed;
+	int iRet{};
 
 	fSpeed = fSpeed/fMax;
 
@@ -344,15 +341,16 @@ int TrainSpeed(int iSpeed, int iMax)
 void CBasePlayer :: DeathSound( void )
 {
 	// water death sounds
-	/*
+	#if QUAKEJUNK
 	if (pev->waterlevel == 3)
 	{
 		EMIT_SOUND(ENT(pev), CHAN_VOICE, "player/h2odeath.wav", 1, ATTN_NONE);
 		return;
 	}
-	*/
+	#endif
 
 	// temporarily using pain sounds for death sounds
+	#ifndef QUAKEJUNK
 	switch (RANDOM_LONG(1,5)) 
 	{
 	case 1: 
@@ -365,6 +363,27 @@ void CBasePlayer :: DeathSound( void )
 		EMIT_SOUND(ENT(pev), CHAN_VOICE, "player/pl_pain7.wav", 1, ATTN_NORM);
 		break;
 	}
+	#else
+	switch (RANDOM_LONG(1,5)) 
+	{
+	case 1: 
+		EMIT_SOUND(ENT(pev), CHAN_VOICE, "player/death1.wav", 1, ATTN_NORM);
+		break;
+	case 2: 
+		EMIT_SOUND(ENT(pev), CHAN_VOICE, "player/death2.wav", 1, ATTN_NORM);
+		break;
+	case 3: 
+		EMIT_SOUND(ENT(pev), CHAN_VOICE, "player/death3.wav", 1, ATTN_NORM);
+		break;
+	case 4: 
+		EMIT_SOUND(ENT(pev), CHAN_VOICE, "player/death4.wav", 1, ATTN_NORM);
+		break;
+	case 5: 
+		EMIT_SOUND(ENT(pev), CHAN_VOICE, "player/death5.wav", 1, ATTN_NORM);
+		break;
+
+	}
+	#endif // QUAKEJUNK
 
 	// play one of the suit death alarms
 	EMIT_GROUPNAME_SUIT(ENT(pev), "HEV_DEAD");

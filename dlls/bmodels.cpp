@@ -539,36 +539,30 @@ void CFuncRotating :: HurtTouch ( CBaseEntity *pOther )
 
 void CFuncRotating :: RampPitchVol (int fUp)
 {
-
 	Vector vecAVel = pev->avelocity;
-	vec_t vecCur;
-	vec_t vecFinal;
-	float fpct;
-	float fvol;
-	float fpitch;
-	int pitch;
-	
+
 	// get current angular velocity
 
-	vecCur = fabs(vecAVel.x != 0 ? vecAVel.x : (vecAVel.y != 0 ? vecAVel.y : vecAVel.z));
+	vec_t vecCur = fabs(vecAVel.x != 0 ? vecAVel.x : (vecAVel.y != 0 ? vecAVel.y : vecAVel.z));
 	
 	// get target angular velocity
 
-	vecFinal = (pev->movedir.x != 0 ? pev->movedir.x : (pev->movedir.y != 0 ? pev->movedir.y : pev->movedir.z));
+	vec_t vecFinal = (pev->movedir.x != 0 ? pev->movedir.x : (pev->movedir.y != 0 ? pev->movedir.y : pev->movedir.z));
 	vecFinal *= pev->speed;
 	vecFinal = fabs(vecFinal);
 
 	// calc volume and pitch as % of final vol and pitch
 
-	fpct = vecCur / vecFinal;
+	float fpct = vecCur / vecFinal;
+	float fvol;
 //	if (fUp)
 //		fvol = m_flVolume * (0.5 + fpct/2.0); // spinup volume ramps up from 50% max vol
 //	else
 		fvol = m_flVolume * fpct;			  // slowdown volume ramps down to 0
 
-	fpitch = FANPITCHMIN + (FANPITCHMAX - FANPITCHMIN) * fpct;	
+	float fpitch = FANPITCHMIN + (FANPITCHMAX - FANPITCHMIN) * fpct;	
 	
-	pitch = (int) fpitch;
+	int pitch = (int)fpitch;
 	if (pitch == PITCH_NORM)
 		pitch = PITCH_NORM-1;
 
@@ -584,12 +578,10 @@ void CFuncRotating :: RampPitchVol (int fUp)
 //
 void CFuncRotating :: SpinUp( void )
 {
-	Vector	vecAVel;//rotational velocity
-
 	pev->nextthink = pev->ltime + 0.1;
 	pev->avelocity = pev->avelocity + ( pev->movedir * ( pev->speed * m_flFanFriction ) );
 
-	vecAVel = pev->avelocity;// cache entity's rotational velocity
+	Vector vecAVel = pev->avelocity;// cache entity's rotational velocity
 
 	// if we've met or exceeded target speed, set target speed and stop thinking
 	if (	fabs(vecAVel.x) >= fabs(pev->movedir.x * pev->speed)	&&
@@ -614,14 +606,13 @@ void CFuncRotating :: SpinUp( void )
 //
 void CFuncRotating :: SpinDown( void )
 {
-	Vector	vecAVel;//rotational velocity
 	vec_t vecdir;
+
+	Vector vecAVel = pev->avelocity;// cache entity's rotational velocity
 
 	pev->nextthink = pev->ltime + 0.1;
 
 	pev->avelocity = pev->avelocity - ( pev->movedir * ( pev->speed * m_flFanFriction ) );//spin down slower than spinup
-
-	vecAVel = pev->avelocity;// cache entity's rotational velocity
 
 	if (pev->movedir.x != 0)
 		vecdir = pev->movedir.x;
@@ -830,10 +821,8 @@ void CPendulum :: PendulumUse( CBaseEntity *pActivator, CBaseEntity *pCaller, US
 	if ( pev->speed )		// Pendulum is moving, stop it and auto-return if necessary
 	{
 		if ( FBitSet( pev->spawnflags, SF_PENDULUM_AUTO_RETURN ) )
-		{		
-			float	delta;
-
-			delta = CBaseToggle :: AxisDelta( pev->spawnflags, pev->angles, m_start );
+		{
+			float delta = CBaseToggle::AxisDelta(pev->spawnflags, pev->angles, m_start);
 
 			pev->avelocity = m_maxSpeed * pev->movedir;
 			pev->nextthink = pev->ltime + (delta / m_maxSpeed);
@@ -873,10 +862,8 @@ void CPendulum::Blocked( CBaseEntity *pOther )
 
 void CPendulum :: Swing( void )
 {
-	float delta, dt;
-	
-	delta = CBaseToggle :: AxisDelta( pev->spawnflags, pev->angles, m_center );
-	dt = gpGlobals->time - m_time;	// How much time has passed?
+	float delta = CBaseToggle::AxisDelta(pev->spawnflags, pev->angles, m_center);
+	float dt = gpGlobals->time - m_time;	// How much time has passed?
 	m_time = gpGlobals->time;		// Remember the last time called
 
 	if ( delta > 0 && m_accel > 0 )
@@ -954,5 +941,4 @@ void CPendulum :: RopeTouch ( CBaseEntity *pOther )
 	pevOther->velocity = g_vecZero;
 	pevOther->movetype = MOVETYPE_NONE;
 }
-
 

@@ -286,8 +286,6 @@ void CBarney :: SetYawSpeed ( void )
 {
 	int ys;
 
-	ys = 0;
-
 	switch ( m_Activity )
 	{
 	case ACT_IDLE:		
@@ -342,10 +340,8 @@ BOOL CBarney :: CheckRangeAttack1 ( float flDot, float flDist )
 //=========================================================
 void CBarney :: BarneyFirePistol ( void )
 {
-	Vector vecShootOrigin;
-
 	UTIL_MakeVectors(pev->angles);
-	vecShootOrigin = pev->origin + Vector( 0, 0, 55 );
+	Vector vecShootOrigin = pev->origin + Vector(0, 0, 55);
 	Vector vecShootDir = ShootAtEnemy( vecShootOrigin );
 
 	Vector angDir = UTIL_VecToAngles( vecShootDir );
@@ -686,8 +682,7 @@ Schedule_t *CBarney :: GetSchedule ( void )
 {
 	if ( HasConditions( bits_COND_HEAR_SOUND ) )
 	{
-		CSound *pSound;
-		pSound = PBestSound();
+		CSound* pSound = PBestSound();
 
 		ASSERT( pSound != NULL );
 		if ( pSound && (pSound->m_iType & bits_SOUND_DANGER) )

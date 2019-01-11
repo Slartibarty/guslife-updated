@@ -27,10 +27,8 @@
 #include "monsters.h"
 #include "animation.h"
 #include "saverestore.h"
-#include "weapons.h"
 #include "scripted.h"
 #include "squadmonster.h"
-#include "decals.h"
 #include "soundent.h"
 #include "gamerules.h"
 
@@ -198,16 +196,11 @@ void CBaseMonster :: BarnacleVictimReleased ( void )
 //=========================================================
 void CBaseMonster :: Listen ( void )
 {
-	int		iSound;
-	int		iMySounds;
-	float	hearingSensitivity;
-	CSound	*pCurrentSound;
-
 	m_iAudibleList = SOUNDLIST_EMPTY; 
 	ClearConditions(bits_COND_HEAR_SOUND | bits_COND_SMELL | bits_COND_SMELL_FOOD);
 	m_afSoundTypes = 0;
 
-	iMySounds = ISoundMask();
+	int iMySounds = ISoundMask();
 
 	if ( m_pSchedule )
 	{
@@ -216,15 +209,15 @@ void CBaseMonster :: Listen ( void )
 		iMySounds &= m_pSchedule->iSoundMask;
 	}
 
-	iSound = CSoundEnt::ActiveList();
+	int iSound = CSoundEnt::ActiveList();
 
 	// UNDONE: Clear these here?
 	ClearConditions( bits_COND_HEAR_SOUND | bits_COND_SMELL_FOOD | bits_COND_SMELL );
-	hearingSensitivity = HearingSensitivity( );
+	float hearingSensitivity = HearingSensitivity();
 
 	while ( iSound != SOUNDLIST_EMPTY )
 	{
-		pCurrentSound = CSoundEnt::SoundPointerForIndex( iSound );
+		CSound* pCurrentSound = CSoundEnt::SoundPointerForIndex(iSound);
 
 		if ( pCurrentSound	&& 
 			 ( pCurrentSound->m_iType & iMySounds )	&& 
@@ -415,13 +408,9 @@ int CBaseMonster :: ISoundMask ( void )
 //=========================================================
 CSound* CBaseMonster :: PBestSound ( void )
 {	
-	int iThisSound; 
+	int iThisSound = m_iAudibleList; 
 	int	iBestSound = -1;
-	float flBestDist = 8192;// so first nearby sound will become best so far.
-	float flDist;
 	CSound *pSound;
-
-	iThisSound = m_iAudibleList; 
 
 	if ( iThisSound == SOUNDLIST_EMPTY )
 	{
@@ -438,7 +427,8 @@ CSound* CBaseMonster :: PBestSound ( void )
 
 		if ( pSound && pSound->FIsSound() )
 		{
-			flDist = ( pSound->m_vecOrigin - EarPosition()).Length();
+			float flBestDist = 8192;// so first nearby sound will become best so far.
+			float flDist = (pSound->m_vecOrigin - EarPosition()).Length();
 
 			if ( flDist < flBestDist )
 			{
@@ -466,13 +456,9 @@ CSound* CBaseMonster :: PBestSound ( void )
 //=========================================================
 CSound* CBaseMonster :: PBestScent ( void )
 {	
-	int iThisScent; 
+	int iThisScent = m_iAudibleList;// smells are in the sound list.
 	int	iBestScent = -1;
-	float flBestDist = 8192;// so first nearby smell will become best so far.
-	float flDist;
 	CSound *pSound;
-
-	iThisScent = m_iAudibleList;// smells are in the sound list.
 
 	if ( iThisScent == SOUNDLIST_EMPTY )
 	{
@@ -489,7 +475,8 @@ CSound* CBaseMonster :: PBestScent ( void )
 
 		if ( pSound->FIsScent() )
 		{
-			flDist = ( pSound->m_vecOrigin - pev->origin ).Length();
+			float flBestDist = 8192;// so first nearby smell will become best so far.
+			float flDist = (pSound->m_vecOrigin - pev->origin).Length();
 
 			if ( flDist < flBestDist )
 			{
@@ -639,21 +626,17 @@ BOOL CBaseMonster :: FRouteClear ( void )
 //=========================================================
 BOOL CBaseMonster :: FRefreshRoute ( void )
 {
-	CBaseEntity	*pPathCorner;
-	int			i;
-	BOOL		returnCode;
-
 	RouteNew();
 
-	returnCode = FALSE;
+	BOOL returnCode = FALSE;
 
 	switch( m_movementGoal )
 	{
 		case MOVEGOAL_PATHCORNER:
 			{
 				// monster is on a path_corner loop
-				pPathCorner = m_pGoalEnt;
-				i = 0;
+				CBaseEntity* pPathCorner = m_pGoalEnt;
+				int i = 0;
 
 				while ( pPathCorner && i < ROUTE_SIZE )
 				{
@@ -996,15 +979,12 @@ BOOL CBaseMonster :: CheckMeleeAttack2 ( float flDot, float flDist )
 //=========================================================
 void CBaseMonster :: CheckAttacks ( CBaseEntity *pTarget, float flDist )
 {
-	Vector2D	vec2LOS;
-	float		flDot;
-
 	UTIL_MakeVectors ( pev->angles );
 
-	vec2LOS = ( pTarget->pev->origin - pev->origin ).Make2D();
+	Vector2D vec2LOS = (pTarget->pev->origin - pev->origin).Make2D();
 	vec2LOS = vec2LOS.Normalize();
 
-	flDot = DotProduct (vec2LOS , gpGlobals->v_forward.Make2D() );
+	float flDot = DotProduct(vec2LOS, gpGlobals->v_forward.Make2D());
 
 	// we know the enemy is in front now. We'll find which attacks the monster is capable of by
 	// checking for corresponding Activities in the model file, then do the simple checks to validate
@@ -1056,10 +1036,8 @@ BOOL CBaseMonster :: FCanCheckAttacks ( void )
 //=========================================================
 int CBaseMonster :: CheckEnemy ( CBaseEntity *pEnemy )
 {
-	float	flDistToEnemy;
-	int		iUpdatedLKP;// set this to TRUE if you update the EnemyLKP in this function.
+	int		iUpdatedLKP = FALSE;// set this to TRUE if you update the EnemyLKP in this function.
 
-	iUpdatedLKP = FALSE;
 	ClearConditions ( bits_COND_ENEMY_FACING_ME );
 	
 	if ( !FVisible( pEnemy ) )
@@ -1079,7 +1057,7 @@ int CBaseMonster :: CheckEnemy ( CBaseEntity *pEnemy )
 
 	Vector vecEnemyPos = pEnemy->pev->origin;
 	// distance to enemy's origin
-	flDistToEnemy = ( vecEnemyPos - pev->origin ).Length();
+	float flDistToEnemy = (vecEnemyPos - pev->origin).Length();
 	vecEnemyPos.z += pEnemy->pev->size.z * 0.5;
 	// distance to enemy's head
 	float flDistToEnemy2 = (vecEnemyPos - pev->origin).Length();
@@ -1221,9 +1199,7 @@ BOOL CBaseMonster :: PopEnemy( )
 //=========================================================
 void CBaseMonster :: SetActivity ( Activity NewActivity )
 {
-	int	iSequence;
-
-	iSequence = LookupActivity ( NewActivity );
+	int iSequence = LookupActivity(NewActivity);
 
 	// Set to the desired anim, or default anim if the desired is not present
 	if ( iSequence > ACTIVITY_NOT_AVAILABLE )
@@ -1299,18 +1275,11 @@ void CBaseMonster :: SetSequenceByName ( char *szSequence )
 #define	LOCAL_STEP_SIZE	16
 int CBaseMonster :: CheckLocalMove ( const Vector &vecStart, const Vector &vecEnd, CBaseEntity *pTarget, float *pflDist )
 {
-	Vector	vecStartPos;// record monster's position before trying the move
-	float	flYaw;
-	float	flDist;
-	float	flStep, stepSize;
-	int		iReturn;
-
-	vecStartPos = pev->origin;
+	const Vector vecStartPos = pev->origin;
 	
-	
-	flYaw = UTIL_VecToYaw ( vecEnd - vecStart );// build a yaw that points to the goal.
-	flDist = ( vecEnd - vecStart ).Length2D();// get the distance.
-	iReturn = LOCALMOVE_VALID;// assume everything will be ok.
+	const float flYaw = UTIL_VecToYaw(vecEnd - vecStart);// build a yaw that points to the goal.
+	const float flDist = (vecEnd - vecStart).Length2D();// get the distance.
+	int iReturn = LOCALMOVE_VALID;// assume everything will be ok.
 
 	// move the monster to the start of the local move that's to be checked.
 	UTIL_SetOrigin( pev, vecStart );// !!!BUGBUG - won't this fire triggers? - nope, SetOrigin doesn't fire
@@ -1337,9 +1306,9 @@ int CBaseMonster :: CheckLocalMove ( const Vector &vecStart, const Vector &vecEn
 	}
 */
 	// this loop takes single steps to the goal.
-	for ( flStep = 0 ; flStep < flDist ; flStep += LOCAL_STEP_SIZE )
+	for ( float flStep = 0 ; flStep < flDist ; flStep += LOCAL_STEP_SIZE )
 	{
-		stepSize = LOCAL_STEP_SIZE;
+		float stepSize = LOCAL_STEP_SIZE;
 
 		if ( (flStep + LOCAL_STEP_SIZE) >= (flDist-1) )
 			stepSize = (flDist - flStep) - 1;
@@ -1511,9 +1480,7 @@ void CBaseMonster :: AdvanceRoute ( float distance )
 
 int CBaseMonster :: RouteClassify( int iMoveFlag )
 {
-	int movementGoal;
-
-	movementGoal = MOVEGOAL_NONE;
+	int movementGoal = MOVEGOAL_NONE;
 
 	if ( iMoveFlag & bits_MF_TO_TARGETENT )
 		movementGoal = MOVEGOAL_TARGETENT;
@@ -1536,7 +1503,6 @@ BOOL CBaseMonster :: BuildRoute ( const Vector &vecGoal, int iMoveFlag, CBaseEnt
 {
 	float	flDist;
 	Vector	vecApex;
-	int		iLocalMove;
 
 	RouteNew();
 	m_movementGoal = RouteClassify( iMoveFlag );
@@ -1546,7 +1512,7 @@ BOOL CBaseMonster :: BuildRoute ( const Vector &vecGoal, int iMoveFlag, CBaseEnt
 	m_Route[ 0 ].iType = iMoveFlag | bits_MF_IS_GOAL;
 
 // check simple local move
-	iLocalMove = CheckLocalMove( pev->origin, vecGoal, pTarget, &flDist );
+	int iLocalMove = CheckLocalMove(pev->origin, vecGoal, pTarget, &flDist);
 
 	if ( iLocalMove == LOCALMOVE_VALID )
 	{
@@ -1600,16 +1566,13 @@ BOOL CBaseMonster :: BuildRoute ( const Vector &vecGoal, int iMoveFlag, CBaseEnt
 //=========================================================
 void CBaseMonster :: InsertWaypoint ( Vector vecLocation, int afMoveFlags )
 {
-	int			i, type;
-
-	
 	// we have to save some Index and Type information from the real
 	// path_corner or node waypoint that the monster was trying to reach. This makes sure that data necessary 
 	// to refresh the original path exists even in the new waypoints that don't correspond directy to a path_corner
 	// or node. 
-	type = afMoveFlags | (m_Route[ m_iRouteIndex ].iType & ~bits_MF_NOT_TO_MASK);
+	int type = afMoveFlags | (m_Route[m_iRouteIndex].iType & ~bits_MF_NOT_TO_MASK);
 
-	for ( i = ROUTE_SIZE-1; i > 0; i-- )
+	for ( int i = ROUTE_SIZE - 1; i > 0; i-- )
 		m_Route[i] = m_Route[i-1];
 
 	m_Route[ m_iRouteIndex ].vecLocation = vecLocation;
@@ -1632,17 +1595,15 @@ BOOL CBaseMonster :: FTriangulate ( const Vector &vecStart , const Vector &vecEn
 	Vector		vecTop;// the spot we'll try to triangulate to on the top
 	Vector		vecBottom;// the spot we'll try to triangulate to on the bottom
 	Vector		vecFarSide;// the spot that we'll move to after hitting the triangulated point, before moving on to our normal goal.
-	int			i;
-	float		sizeX, sizeZ;
 
 	// If the hull width is less than 24, use 24 because CheckLocalMove uses a min of
 	// 24.
-	sizeX = pev->size.x;
+	float sizeX = pev->size.x;
 	if (sizeX < 24.0)
 		sizeX = 24.0;
 	else if (sizeX > 48.0)
 		sizeX = 48.0;
-	sizeZ = pev->size.z;
+	float sizeZ = pev->size.z;
 	//if (sizeZ < 24.0)
 	//	sizeZ = 24.0;
 
@@ -1671,7 +1632,7 @@ BOOL CBaseMonster :: FTriangulate ( const Vector &vecStart , const Vector &vecEn
 	if (pev->movetype == MOVETYPE_FLY)
 		vecDirUp = vecDirUp * sizeZ * 2;
 
-	for ( i = 0 ; i < 8; i++ )
+	for ( int i = 0 ; i < 8; i++ )
 	{
 // Debug, Draw the triangulation
 #if 0
@@ -1793,7 +1754,7 @@ BOOL CBaseMonster :: FTriangulate ( const Vector &vecStart , const Vector &vecEn
 //=========================================================
 // Move - take a single step towards the next ROUTE location
 //=========================================================
-#define DIST_TO_CHECK	200
+#define DIST_TO_CHECK	600
 
 void CBaseMonster :: Move ( float flInterval ) 
 {
@@ -1873,12 +1834,10 @@ void CBaseMonster :: Move ( float flInterval )
 	flDist = 0;
 	if ( CheckLocalMove ( pev->origin, pev->origin + vecDir * flCheckDist, pTargetEnt, &flDist ) != LOCALMOVE_VALID )
 	{
-		CBaseEntity *pBlocker;
-
 		// Can't move, stop
 		Stop();
 		// Blocking entity is in global trace_ent
-		pBlocker = CBaseEntity::Instance( gpGlobals->trace_ent );
+		CBaseEntity* pBlocker = CBaseEntity::Instance(gpGlobals->trace_ent);
 		if (pBlocker)
 		{
 			DispatchBlocked( edict(), pBlocker->edict() );
@@ -1905,7 +1864,7 @@ void CBaseMonster :: Move ( float flInterval )
 			}
 			else
 			{
-//				ALERT ( at_aiconsole, "Couldn't Triangulate\n" );
+				ALERT ( at_aiconsole, "Couldn't Triangulate\n" );
 				Stop();
 				// Only do this once until your route is cleared
 				if ( m_moveWaitTime > 0 && !(m_afMemory & bits_MEMORY_MOVE_FAILED) )
@@ -1985,11 +1944,11 @@ void CBaseMonster::MoveExecute( CBaseEntity *pTargetEnt, const Vector &vecDir, f
 		m_IdealActivity = m_movementActivity;
 
 	float flTotal = m_flGroundSpeed * pev->framerate * flInterval;
-	float flStep;
+
 	while (flTotal > 0.001)
 	{
 		// don't walk more than 16 units or stairs stop working
-		flStep = V_min( 16.0, flTotal );
+		float flStep = V_min( 16.0, flTotal );
 		UTIL_MoveToOrigin ( ENT(pev), m_Route[ m_iRouteIndex ].vecLocation, flStep, MOVE_NORMAL );
 		flTotal -= flStep;
 	}
@@ -2091,7 +2050,9 @@ void CBaseMonster :: StartMonster ( void )
 		if (!WALK_MOVE ( ENT(pev), 0, 0, WALKMOVE_NORMAL ) )
 		{
 			ALERT(at_error, "Monster %s stuck in wall--level design error", STRING(pev->classname));
+			#ifdef _DEBUG
 			pev->effects = EF_BRIGHTFIELD;
+			#endif
 		}
 	}
 	else 
@@ -2234,7 +2195,6 @@ int CBaseMonster::IRelationship ( CBaseEntity *pTarget )
 
 BOOL CBaseMonster :: FindCover ( Vector vecThreat, Vector vecViewOffset, float flMinDist, float flMaxDist )
 {
-	int i;
 	int iMyHullIndex;
 	int iMyNode;
 	int iThreatNode;
@@ -2281,7 +2241,7 @@ BOOL CBaseMonster :: FindCover ( Vector vecThreat, Vector vecViewOffset, float f
 	vecLookersOffset = vecThreat + vecViewOffset;// calculate location of enemy's eyes
 
 	// we'll do a rough sample to find nodes that are relatively nearby
-	for ( i = 0 ; i < WorldGraph.m_cNodes ; i++ )
+	for ( int i = 0 ; i < WorldGraph.m_cNodes ; i++ )
 	{
 		int nodeNumber = (i + WorldGraph.m_iLastCoverSearch) % WorldGraph.m_cNodes;
 
@@ -2340,7 +2300,6 @@ BOOL CBaseMonster :: FindCover ( Vector vecThreat, Vector vecViewOffset, float f
 //=========================================================
 BOOL CBaseMonster :: BuildNearestRoute ( Vector vecThreat, Vector vecViewOffset, float flMinDist, float flMaxDist )
 {
-	int i;
 	int iMyHullIndex;
 	int iMyNode;
 	float flDist;
@@ -2379,7 +2338,7 @@ BOOL CBaseMonster :: BuildNearestRoute ( Vector vecThreat, Vector vecViewOffset,
 	vecLookersOffset = vecThreat + vecViewOffset;// calculate location of enemy's eyes
 
 	// we'll do a rough sample to find nodes that are relatively nearby
-	for ( i = 0 ; i < WorldGraph.m_cNodes ; i++ )
+	for ( int i = 0 ; i < WorldGraph.m_cNodes ; i++ )
 	{
 		int nodeNumber = (i + WorldGraph.m_iLastCoverSearch) % WorldGraph.m_cNodes;
 
@@ -2844,7 +2803,6 @@ BOOL CBaseMonster :: FGetNodeRoute ( Vector vecDest )
 //=========================================================
 int CBaseMonster :: FindHintNode ( void )
 {
-	int i;
 	TraceResult tr;
 
 	if ( !WorldGraph.m_fGraphPresent )
@@ -2858,7 +2816,7 @@ int CBaseMonster :: FindHintNode ( void )
 		WorldGraph.m_iLastActiveIdleSearch = 0;
 	}
 
-	for ( i = 0; i < WorldGraph.m_cNodes ; i++ )
+	for ( int i = 0; i < WorldGraph.m_cNodes ; i++ )
 	{
 		int nodeNumber = (i + WorldGraph.m_iLastActiveIdleSearch) % WorldGraph.m_cNodes;
 		CNode &node = WorldGraph.Node( nodeNumber );
@@ -3134,12 +3092,9 @@ int CBaseMonster :: CanPlaySequence( BOOL fDisregardMonsterState, int interruptL
 BOOL CBaseMonster :: FindLateralCover ( const Vector &vecThreat, const Vector &vecViewOffset )
 {
 	TraceResult	tr;
-	Vector	vecBestOnLeft;
-	Vector	vecBestOnRight;
 	Vector	vecLeftTest;
 	Vector	vecRightTest;
 	Vector	vecStepRight;
-	int		i;
 
 	UTIL_MakeVectors ( pev->angles );
 	vecStepRight = gpGlobals->v_right * COVER_DELTA;
@@ -3147,7 +3102,7 @@ BOOL CBaseMonster :: FindLateralCover ( const Vector &vecThreat, const Vector &v
 	
 	vecLeftTest = vecRightTest = pev->origin;
 
-	for ( i = 0 ; i < COVER_CHECKS ; i++ )
+	for ( int i = 0 ; i < COVER_CHECKS ; i++ )
 	{
 		vecLeftTest = vecLeftTest - vecStepRight;
 		vecRightTest = vecRightTest + vecStepRight;

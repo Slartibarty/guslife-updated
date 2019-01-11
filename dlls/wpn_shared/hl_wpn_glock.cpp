@@ -16,9 +16,7 @@
 #include "extdll.h"
 #include "util.h"
 #include "cbase.h"
-#include "monsters.h"
 #include "weapons.h"
-#include "nodes.h"
 #include "player.h"
 
 enum glock_e {
@@ -144,7 +142,9 @@ void CGlock::GlockFire( float flSpread , float flCycleTime, BOOL fUseAutoAim )
 		m_pPlayer->m_iWeaponFlash = NORMAL_GUN_FLASH;
 	}
 
-	Vector vecSrc	 = m_pPlayer->GetGunPosition( );
+	//Vector vecSrc	 = m_pPlayer->GetGunPosition( );
+	const Vector vecSrc(0,0,16);
+	
 	Vector vecAiming;
 	
 	if ( fUseAutoAim )
