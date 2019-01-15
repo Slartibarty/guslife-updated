@@ -142,8 +142,7 @@ void CGlock::GlockFire( float flSpread , float flCycleTime, BOOL fUseAutoAim )
 		m_pPlayer->m_iWeaponFlash = NORMAL_GUN_FLASH;
 	}
 
-	//Vector vecSrc	 = m_pPlayer->GetGunPosition( );
-	const Vector vecSrc(0,0,16);
+	Vector vecSrc	 = m_pPlayer->GetGunPosition( );
 	
 	Vector vecAiming;
 	
@@ -204,22 +203,22 @@ void CGlock::WeaponIdle( void )
 	if (m_iClip != 0)
 	{
 		int iAnim;
-		float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0.0, 1.0 );
+		const float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0.0, 1.0 );
 
-		if (flRand <= 0.3 + 0 * 0.75)
+		if (flRand <= 0.7)
 		{
-			iAnim = GLOCK_IDLE3;
+			iAnim = GLOCK_IDLE3; // Idle 3 is the slowidle
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 49.0 / 16;
 		}
-		else if (flRand <= 0.6 + 0 * 0.875)
+		else if (flRand <= 0.8)
 		{
-			iAnim = GLOCK_IDLE1;
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 60.0 / 16.0;
+			iAnim = GLOCK_IDLE2; // fidget
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 40.0 / 16.0;
 		}
 		else
 		{
-			iAnim = GLOCK_IDLE2;
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 40.0 / 16.0;
+			iAnim = GLOCK_IDLE1; // fidget
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 60.0 / 16.0;
 		}
 		SendWeaponAnim( iAnim, 1 );
 	}

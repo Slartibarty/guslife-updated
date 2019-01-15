@@ -804,7 +804,7 @@ void ClientPrecache( void )
 	// setup precaches always needed
 	PRECACHE_SOUND("player/sprayer.wav");			// spray paint sound for PreAlpha
 	
-	// PRECACHE_SOUND("player/pl_jumpland2.wav");		// UNDONE: play 2x step sound
+	PRECACHE_SOUND("player/pl_jumpland2.wav");		// UNDONE: play 2x step sound
 	
 	PRECACHE_SOUND("player/pl_fallpain2.wav");		
 	PRECACHE_SOUND("player/pl_fallpain3.wav");		
@@ -889,6 +889,15 @@ void ClientPrecache( void )
 	PRECACHE_SOUND("player/pl_pain5.wav");
 	PRECACHE_SOUND("player/pl_pain6.wav");
 	PRECACHE_SOUND("player/pl_pain7.wav");
+
+	#ifdef QUAKEJUNK
+	PRECACHE_SOUND("player/h2odeath.wav");
+	PRECACHE_SOUND("player/death1.wav");
+	PRECACHE_SOUND("player/death2.wav");
+	PRECACHE_SOUND("player/death3.wav");
+	PRECACHE_SOUND("player/death4.wav");
+	PRECACHE_SOUND("player/death5.wav");
+	#endif
 
 	PRECACHE_MODEL("models/player.mdl");
 

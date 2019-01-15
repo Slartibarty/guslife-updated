@@ -2270,6 +2270,7 @@ class CEnvStudio : public CBaseEntity
 public:
 	void Spawn();
 	void Precache();
+	int ObjectCaps() { return CBaseEntity::ObjectCaps() & ~FCAP_ACROSS_TRANSITION; } // Don't transition this entity
 };
 LINK_ENTITY_TO_CLASS( env_studio, CEnvStudio );
 

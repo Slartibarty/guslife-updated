@@ -2704,14 +2704,7 @@ void PM_CheckFalling( void )
 		}
 		else if ( pmove->flFallVelocity > PLAYER_MAX_SAFE_FALL_SPEED / 2 )
 		{
-			qboolean tfc = false;
-			tfc = atoi( pmove->PM_Info_ValueForKey( pmove->physinfo, "tfc" ) ) == 1 ? true : false;
-
-			if ( tfc )
-			{
-				pmove->PM_PlaySound( CHAN_VOICE, "player/pl_fallpain3.wav", 1, ATTN_NORM, 0, PITCH_NORM );
-			}
-
+			pmove->PM_PlaySound( CHAN_VOICE, "player/pl_jumpland2.wav", 1, ATTN_NORM, 0, PITCH_NORM );
 			fvol = 0.85;
 		}
 		else if ( pmove->flFallVelocity < PLAYER_MIN_BOUNCE_SPEED )

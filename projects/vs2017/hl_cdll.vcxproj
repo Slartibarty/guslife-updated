@@ -63,6 +63,9 @@
       <AdditionalIncludeDirectories>..\..\dlls;..\..\cl_dll;..\..\public;..\..\common;..\..\pm_shared;..\..\engine;..\..\utils\vgui\include;..\..\game_shared;..\..\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -72,8 +75,17 @@
       </BaseAddress>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy "$(TargetDir)"$(TargetFileName) "D:\SteamLibrary\Steam\steamapps\joshdowell1\Sven Co-op Internal\Guslife\cl_dlls\.\$(TargetFileName)"
+if ERRORLEVEL 1 goto BuildEventFailed
+if exist "$(TargetDir)"$(TargetName).map copy "$(TargetDir)"$(TargetName).map "D:\SteamLibrary\Steam\steamapps\joshdowell1\Sven Co-op Internal\Guslife\cl_dlls\.\$(TargetName).map"
+copy "$(TargetDir)"$(TargetName).pdb "D:\SteamLibrary\Steam\steamapps\joshdowell1\Sven Co-op Internal\Guslife\cl_dlls\.\$(TargetName).pdb"
+if ERRORLEVEL 1 goto BuildEventFailed
+goto BuildEventOK
+:BuildEventFailed
+echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***
+exit 1
+:BuildEventOK</Command>
+      <Message>Publishing to \guslife\cl_dlls</Message>
     </PostBuildEvent>
     <PostBuildEvent />
   </ItemDefinitionGroup>
@@ -90,6 +102,9 @@
       <AdditionalIncludeDirectories>..\..\dlls;..\..\cl_dll;..\..\public;..\..\common;..\..\pm_shared;..\..\engine;..\..\utils\vgui\include;..\..\game_shared;..\..\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -101,8 +116,17 @@
       </BaseAddress>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy "$(TargetDir)"$(TargetFileName) "D:\SteamLibrary\Steam\steamapps\joshdowell1\Sven Co-op Internal\Guslife\cl_dlls\.\$(TargetFileName)"
+if ERRORLEVEL 1 goto BuildEventFailed
+if exist "$(TargetDir)"$(TargetName).map copy "$(TargetDir)"$(TargetName).map "D:\SteamLibrary\Steam\steamapps\joshdowell1\Sven Co-op Internal\Guslife\cl_dlls\.\$(TargetName).map"
+copy "$(TargetDir)"$(TargetName).pdb "D:\SteamLibrary\Steam\steamapps\joshdowell1\Sven Co-op Internal\Guslife\cl_dlls\.\$(TargetName).pdb"
+if ERRORLEVEL 1 goto BuildEventFailed
+goto BuildEventOK
+:BuildEventFailed
+echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***
+exit 1
+:BuildEventOK</Command>
+      <Message>Publishing to \guslife\cl_dlls</Message>
     </PostBuildEvent>
     <PostBuildEvent />
   </ItemDefinitionGroup>

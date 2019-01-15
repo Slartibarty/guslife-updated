@@ -53,17 +53,15 @@ void CGib :: LimitVelocity( void )
 }
 
 
-void CGib :: SpawnStickyGibs( entvars_t *pevVictim, Vector vecOrigin, int cGibs )
+void CGib :: SpawnStickyGibs( entvars_t *pevVictim, int cGibs )
 {
-	int i;
-
 	if ( g_Language == LANGUAGE_GERMAN )
 	{
 		// no sticky gibs in germany right now!
 		return; 
 	}
 
-	for ( i = 0 ; i < cGibs ; i++ )
+	for ( int i = 0 ; i < cGibs ; i++ )
 	{
 		CGib *pGib = GetClassPtr( (CGib *)NULL );
 
@@ -72,15 +70,10 @@ void CGib :: SpawnStickyGibs( entvars_t *pevVictim, Vector vecOrigin, int cGibs 
 
 		if ( pevVictim )
 		{
-			pGib->pev->origin.x = vecOrigin.x + RANDOM_FLOAT( -3, 3 );
-			pGib->pev->origin.y = vecOrigin.y + RANDOM_FLOAT( -3, 3 );
-			pGib->pev->origin.z = vecOrigin.z + RANDOM_FLOAT( -3, 3 );
-
-			/*
+			// spawn the gib somewhere in the monster's bounding volume
 			pGib->pev->origin.x = pevVictim->absmin.x + pevVictim->size.x * (RANDOM_FLOAT ( 0 , 1 ) );
 			pGib->pev->origin.y = pevVictim->absmin.y + pevVictim->size.y * (RANDOM_FLOAT ( 0 , 1 ) );
-			pGib->pev->origin.z = pevVictim->absmin.z + pevVictim->size.z * (RANDOM_FLOAT ( 0 , 1 ) );
-			*/
+			pGib->pev->origin.z = pevVictim->absmin.z + pevVictim->size.z * (RANDOM_FLOAT ( 0 , 1 ) ) + 1;	// absmin.z is in the floor because the engine subtracts 1 to enlarge the box
 
 			// make the gib fly away from the attack vector
 			pGib->pev->velocity = g_vecAttackDir * -1;
@@ -302,8 +295,7 @@ void CBaseMonster::FadeMonster( void )
 //=========================================================
 void CBaseMonster :: GibMonster( void )
 {
-	TraceResult	tr;
-	BOOL		gibbed = FALSE;
+	bool		gibbed = false;
 
 	EMIT_SOUND(ENT(pev), CHAN_WEAPON, "common/bodysplat.wav", 1, ATTN_NORM);		
 
@@ -313,9 +305,10 @@ void CBaseMonster :: GibMonster( void )
 		if ( CVAR_GET_FLOAT("violence_hgibs") != 0 )	// Only the player will ever get here
 		{
 			CGib::SpawnHeadGib( pev );
+			CGib::SpawnStickyGibs( pev, 4 );	// throw some sticky gibs
 			CGib::SpawnRandomGibs( pev, 4, 1 );	// throw some human gibs.
 		}
-		gibbed = TRUE;
+		gibbed = true;
 	}
 	else if ( HasAlienGibs() )
 	{
@@ -323,7 +316,7 @@ void CBaseMonster :: GibMonster( void )
 		{
 			CGib::SpawnRandomGibs( pev, 4, 0 );	// Throw alien gibs
 		}
-		gibbed = TRUE;
+		gibbed = true;
 	}
 
 	if ( !IsPlayer() )

@@ -24,7 +24,7 @@
 #include "util.h"
 #include "cbase.h"
 #include "saverestore.h"
-#include <time.h>
+#include <ctime>
 #include "shake.h"
 #include "decals.h"
 #include "player.h"
@@ -356,11 +356,11 @@ float	UTIL_AngleMod(float a)
 {
 	if (a < 0)
 	{
-		a = a + 360 * ((int)(a / 360) + 1);
+		a = a + 360 * (static_cast<int>(a / 360) + 1);
 	}
 	else if (a >= 360)
 	{
-		a = a - 360 * ((int)(a / 360));
+		a = a - 360 * static_cast<int>(a / 360);
 	}
 	// a = (360.0/65536) * ((int)(a*(65536/360.0)) & 65535);
 	return a;
@@ -368,9 +368,7 @@ float	UTIL_AngleMod(float a)
 
 float UTIL_AngleDiff( float destAngle, float srcAngle )
 {
-	float delta;
-
-	delta = destAngle - srcAngle;
+	float delta = destAngle - srcAngle;
 	if ( destAngle > srcAngle )
 	{
 		if ( delta >= 180 )
@@ -405,9 +403,8 @@ int UTIL_EntitiesInBox( CBaseEntity **pList, int listMax, const Vector &mins, co
 {
 	edict_t		*pEdict = g_engfuncs.pfnPEntityOfEntIndex( 1 );
 	CBaseEntity *pEntity;
-	int			count;
 
-	count = 0;
+	int count = 0;
 
 	if ( !pEdict )
 		return count;
@@ -756,13 +753,12 @@ void UTIL_ScreenFadeWrite( const ScreenFade &fade, CBaseEntity *pEntity )
 
 void UTIL_ScreenFadeAll( const Vector &color, float fadeTime, float fadeHold, int alpha, int flags )
 {
-	int			i;
 	ScreenFade	fade;
 
 
 	UTIL_ScreenFadeBuild( fade, color, fadeTime, fadeHold, alpha, flags );
 
-	for ( i = 1; i <= gpGlobals->maxClients; i++ )
+	for ( int i = 1; i <= gpGlobals->maxClients; i++ )
 	{
 		CBaseEntity *pPlayer = UTIL_PlayerByIndex( i );
 	
@@ -826,9 +822,7 @@ void UTIL_HudMessage( CBaseEntity *pEntity, const hudtextparms_t &textparms, con
 
 void UTIL_HudMessageAll( const hudtextparms_t &textparms, const char *pMessage )
 {
-	int			i;
-
-	for ( i = 1; i <= gpGlobals->maxClients; i++ )
+	for ( int i = 1; i <= gpGlobals->maxClients; i++ )
 	{
 		CBaseEntity *pPlayer = UTIL_PlayerByIndex( i );
 		if ( pPlayer )
@@ -935,11 +929,9 @@ void UTIL_ShowMessage( const char *pString, CBaseEntity *pEntity )
 
 void UTIL_ShowMessageAll( const char *pString )
 {
-	int		i;
-
 	// loop through all players
 
-	for ( i = 1; i <= gpGlobals->maxClients; i++ )
+	for ( int i = 1; i <= gpGlobals->maxClients; i++ )
 	{
 		CBaseEntity *pPlayer = UTIL_PlayerByIndex( i );
 		if ( pPlayer )

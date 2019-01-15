@@ -29,12 +29,9 @@ skilldata_t	gSkillData;
 //=========================================================
 float GetSkillCvar( char *pName )
 {
-	int		iCount;
 	float	flValue;
 	char	szBuffer[ 64 ];
 	
-	iCount = sprintf( szBuffer, "%s%d",pName, gSkillData.iSkillLevel );
-
 	flValue = CVAR_GET_FLOAT ( szBuffer );
 
 	if ( flValue <= 0 )

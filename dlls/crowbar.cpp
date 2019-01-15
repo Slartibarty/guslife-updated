@@ -28,10 +28,8 @@
 
 LINK_ENTITY_TO_CLASS( weapon_crowbar, CCrowbar );
 
-
-
-enum gauss_e {
-	CROWBAR_IDLE = 0,
+enum crowbar_e {
+	CROWBAR_IDLE1 = 0,
 	CROWBAR_DRAW,
 	CROWBAR_HOLSTER,
 	CROWBAR_ATTACK1HIT,
@@ -39,7 +37,9 @@ enum gauss_e {
 	CROWBAR_ATTACK2MISS,
 	CROWBAR_ATTACK2HIT,
 	CROWBAR_ATTACK3MISS,
-	CROWBAR_ATTACK3HIT
+	CROWBAR_ATTACK3HIT,
+	CROWBAR_IDLE2,
+	CROWBAR_IDLE3
 };
 
 
@@ -100,14 +100,11 @@ void CCrowbar::Holster( int skiplocal /* = 0 */ )
 
 void FindHullIntersection( const Vector &vecSrc, TraceResult &tr, float *mins, float *maxs, edict_t *pEntity )
 {
-	int			i, j, k;
-	float		distance;
+	float		distance = 1e6f;
 	float		*minmaxs[2] = {mins, maxs};
 	TraceResult tmpTrace;
 	Vector		vecHullEnd = tr.vecEndPos;
 	Vector		vecEnd;
-
-	distance = 1e6f;
 
 	vecHullEnd = vecSrc + ((vecHullEnd - vecSrc)*2);
 	UTIL_TraceLine( vecSrc, vecHullEnd, dont_ignore_monsters, pEntity, &tmpTrace );
@@ -117,11 +114,11 @@ void FindHullIntersection( const Vector &vecSrc, TraceResult &tr, float *mins, f
 		return;
 	}
 
-	for ( i = 0; i < 2; i++ )
+	for ( int i = 0; i < 2; i++ )
 	{
-		for ( j = 0; j < 2; j++ )
+		for ( int j = 0; j < 2; j++ )
 		{
-			for ( k = 0; k < 2; k++ )
+			for ( int k = 0; k < 2; k++ )
 			{
 				vecEnd.x = vecHullEnd.x + minmaxs[i][0];
 				vecEnd.y = vecHullEnd.y + minmaxs[j][1];
@@ -312,6 +309,32 @@ int CCrowbar::Swing( int fFirst )
 		
 	}
 	return fDidHit;
+}
+
+void CCrowbar::WeaponIdle( void )
+{
+	if ( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
+		return;
+
+	int iAnim;
+	const float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0.0, 1.0 );
+
+	if (flRand <= 0.7)
+	{
+		iAnim = CROWBAR_IDLE1; // Idle 3 is the slowidle
+		m_flTimeWeaponIdle = 36.0/13.0;
+	}
+	else if (flRand <= 0.85)
+	{
+		iAnim = CROWBAR_IDLE2; // fidget
+		m_flTimeWeaponIdle = 81.0/15.0;
+	}
+	else
+	{
+		iAnim = CROWBAR_IDLE3; // fidget
+		m_flTimeWeaponIdle = 81.0/15.0;
+	}
+	SendWeaponAnim( iAnim, 1 );
 }
 
 

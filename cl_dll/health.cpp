@@ -138,6 +138,7 @@ int CHudHealth:: MsgFunc_Damage(const char *pszName,  int iSize, void *pbuf )
 	return 1;
 }
 
+//#define OLD_PAINCOLOR
 
 // Returns back a color from the
 // Green <-> Yellow <-> Red ramp
@@ -149,7 +150,7 @@ void CHudHealth::GetPainColor( int &r, int &g, int &b )
 		iHealth -= 25;
 	else if ( iHealth < 0 )
 		iHealth = 0;
-#if 0
+#ifdef OLD_PAINCOLOR
 	g = iHealth * 255 / 100;
 	r = 255 - g;
 	b = 0;
@@ -164,7 +165,7 @@ void CHudHealth::GetPainColor( int &r, int &g, int &b )
 		g = 0;
 		b = 0;
 	}
-#endif 
+#endif
 }
 
 int CHudHealth::Draw(float flTime)

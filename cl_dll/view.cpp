@@ -93,12 +93,12 @@ cvar_t	*cl_chasedist;
 
 // These cvars are not registered (so users can't cheat), so set the ->value field directly
 // Register these cvars in V_Init() if needed for easy tweaking
-cvar_t	v_iyaw_cycle		= {"v_iyaw_cycle", "2", 0, 2};
-cvar_t	v_iroll_cycle		= {"v_iroll_cycle", "0.5", 0, 0.5};
-cvar_t	v_ipitch_cycle		= {"v_ipitch_cycle", "1", 0, 1};
-cvar_t	v_iyaw_level		= {"v_iyaw_level", "0.3", 0, 0.3};
-cvar_t	v_iroll_level		= {"v_iroll_level", "0.1", 0, 0.1};
-cvar_t	v_ipitch_level		= {"v_ipitch_level", "0.3", 0, 0.3};
+cvar_t	*v_iyaw_cycle;
+cvar_t	*v_iroll_cycle;
+cvar_t	*v_ipitch_cycle;
+cvar_t	*v_iyaw_level;
+cvar_t	*v_iroll_level;
+cvar_t	*v_ipitch_level;
 
 float	v_idlescale;  // used by TFC for concussion grenade effect
 
@@ -360,20 +360,18 @@ V_CalcGunAngle
 ==================
 */
 void V_CalcGunAngle ( struct ref_params_s *pparams )
-{	
-	cl_entity_t *viewent;
-	
-	viewent = gEngfuncs.GetViewModel();
+{
+	cl_entity_t* viewent = gEngfuncs.GetViewModel();
 	if ( !viewent )
 		return;
 
 	viewent->angles[YAW]   =  pparams->viewangles[YAW]   + pparams->crosshairangle[YAW];
 	viewent->angles[PITCH] = -pparams->viewangles[PITCH] + pparams->crosshairangle[PITCH] * 0.25;
-	viewent->angles[ROLL]  -= v_idlescale * sin(pparams->time*v_iroll_cycle.value) * v_iroll_level.value;
+	viewent->angles[ROLL]  -= v_idlescale * sin(pparams->time*v_iroll_cycle->value) * v_iroll_level->value;
 	
 	// don't apply all of the v_ipitch to prevent normally unseen parts of viewmodel from coming into view.
-	viewent->angles[PITCH] -= v_idlescale * sin(pparams->time*v_ipitch_cycle.value) * (v_ipitch_level.value * 0.5);
-	viewent->angles[YAW]   -= v_idlescale * sin(pparams->time*v_iyaw_cycle.value) * v_iyaw_level.value;
+	viewent->angles[PITCH] -= v_idlescale * sin(pparams->time*v_ipitch_cycle->value) * (v_ipitch_level->value * 0.5);
+	viewent->angles[YAW]   -= v_idlescale * sin(pparams->time*v_iyaw_cycle->value) * v_iyaw_level->value;
 
 	VectorCopy( viewent->angles, viewent->curstate.angles );
 	VectorCopy( viewent->angles, viewent->latched.prevangles );
@@ -388,9 +386,9 @@ Idle swaying
 */
 void V_AddIdle ( struct ref_params_s *pparams )
 {
-	pparams->viewangles[ROLL] += v_idlescale * sin(pparams->time*v_iroll_cycle.value) * v_iroll_level.value;
-	pparams->viewangles[PITCH] += v_idlescale * sin(pparams->time*v_ipitch_cycle.value) * v_ipitch_level.value;
-	pparams->viewangles[YAW] += v_idlescale * sin(pparams->time*v_iyaw_cycle.value) * v_iyaw_level.value;
+	pparams->viewangles[ROLL] += v_idlescale * sin(pparams->time*v_iroll_cycle->value) * v_iroll_level->value;
+	pparams->viewangles[PITCH] += v_idlescale * sin(pparams->time*v_ipitch_cycle->value) * v_ipitch_level->value;
+	pparams->viewangles[YAW] += v_idlescale * sin(pparams->time*v_iyaw_cycle->value) * v_iyaw_level->value;
 }
 
  
@@ -403,14 +401,12 @@ Roll is induced by movement and damage
 */
 void V_CalcViewRoll ( struct ref_params_s *pparams )
 {
-	float		side;
-	cl_entity_t *viewentity;
-	
-	viewentity = gEngfuncs.GetEntityByIndex( pparams->viewentity );
+	cl_entity_t* viewentity = gEngfuncs.GetEntityByIndex(pparams->viewentity);
 	if ( !viewentity )
 		return;
 
-	side = V_CalcRoll ( viewentity->angles, pparams->simvel, pparams->movevars->rollangle, pparams->movevars->rollspeed );
+	const float side = V_CalcRoll(viewentity->angles, pparams->simvel, pparams->movevars->rollangle,
+	                        pparams->movevars->rollspeed);
 
 	pparams->viewangles[ROLL] += side;
 
@@ -432,14 +428,8 @@ V_CalcIntermissionRefdef
 */
 void V_CalcIntermissionRefdef ( struct ref_params_s *pparams )
 {
-	cl_entity_t	*ent, *view;
-	float		old;
-
-	// ent is the player model ( visible when out of body )
-	ent = gEngfuncs.GetLocalPlayer();
-	
 	// view is the weapon model (only visible from inside body )
-	view = gEngfuncs.GetViewModel();
+	cl_entity_t* view = gEngfuncs.GetViewModel();
 
 	VectorCopy ( pparams->simorg, pparams->vieworg );
 	VectorCopy ( pparams->cl_viewangles, pparams->viewangles );
@@ -447,7 +437,7 @@ void V_CalcIntermissionRefdef ( struct ref_params_s *pparams )
 	view->model = NULL;
 
 	// allways idle in intermission
-	old = v_idlescale;
+	float old = v_idlescale;
 	v_idlescale = 1;
 
 	V_AddIdle ( pparams );
@@ -598,6 +588,10 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	}
 
 	pparams->vieworg[2] += waterOffset;
+
+	//v_idlescale = 16; // Drunk mode
+
+	//v_idlescale = 0.5; // For just the gun sway
 	
 	V_CalcViewRoll ( pparams );
 	
@@ -639,7 +633,9 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	
 	// Give gun our viewangles
 	VectorCopy ( pparams->cl_viewangles, view->angles );
-	
+
+	//v_idlescale = 1; // For just the gun sway
+
 	// set up gun position
 	V_CalcGunAngle ( pparams );
 
@@ -1716,6 +1712,23 @@ void V_Init (void)
 	cl_bobup			= gEngfuncs.pfnRegisterVariable( "cl_bobup","0.5", 0 );
 	cl_waterdist		= gEngfuncs.pfnRegisterVariable( "cl_waterdist","4", 0 );
 	cl_chasedist		= gEngfuncs.pfnRegisterVariable( "cl_chasedist","112", 0 );
+
+	// V_ variables
+	v_iyaw_cycle		= gEngfuncs.pfnRegisterVariable( "v_iyaw_cycle", "2", 0 );
+	v_iroll_cycle		= gEngfuncs.pfnRegisterVariable( "v_iroll_cycle", "0.5", 0 );
+	v_ipitch_cycle		= gEngfuncs.pfnRegisterVariable( "v_ipitch_cycle", "1", 0 );
+	v_iyaw_level		= gEngfuncs.pfnRegisterVariable( "v_iyaw_level", "0.3", 0 );
+	v_iroll_level		= gEngfuncs.pfnRegisterVariable( "v_iroll_level", "0.1", 0 );
+	v_ipitch_level		= gEngfuncs.pfnRegisterVariable( "v_ipitch_level", "0.3", 0 );
+
+	// These cvars are not registered (so users can't cheat), so set the ->value field directly
+	// Register these cvars in V_Init() if needed for easy tweaking
+	//cvar_t	v_iyaw_cycle		= {"v_iyaw_cycle", "2", 0, 2};
+	//cvar_t	v_iroll_cycle		= {"v_iroll_cycle", "0.5", 0, 0.5};
+	//cvar_t	v_ipitch_cycle		= {"v_ipitch_cycle", "1", 0, 1};
+	//cvar_t	v_iyaw_level		= {"v_iyaw_level", "0.3", 0, 0.3};
+	//cvar_t	v_iroll_level		= {"v_iroll_level", "0.1", 0, 0.1};
+	//cvar_t	v_ipitch_level		= {"v_ipitch_level", "0.3", 0, 0.3};
 }
 
 

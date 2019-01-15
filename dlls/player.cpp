@@ -244,15 +244,18 @@ LINK_ENTITY_TO_CLASS( player, CBasePlayer );
 
 void CBasePlayer :: Pain( void )
 {
-	// Sound randomizer
-	const float flRndSound = RANDOM_FLOAT(0, 1); 
-	
-	if ( flRndSound <= 0.33 )
+	switch ( RANDOM_LONG(1,3) )
+	{
+	case 1:
 		EMIT_SOUND(ENT(pev), CHAN_VOICE, "player/pl_pain5.wav", 1, ATTN_NORM);
-	else if ( flRndSound <= 0.66 )	
+		break;
+	case 2:
 		EMIT_SOUND(ENT(pev), CHAN_VOICE, "player/pl_pain6.wav", 1, ATTN_NORM);
-	else
+		break;
+	case 3:
 		EMIT_SOUND(ENT(pev), CHAN_VOICE, "player/pl_pain7.wav", 1, ATTN_NORM);
+		break;
+	}
 }
 
 /* 
@@ -402,10 +405,8 @@ Vector CBasePlayer :: GetGunPosition( )
 {
 //	UTIL_MakeVectors(pev->v_angle);
 //	m_HackedGunPos = pev->view_ofs;
-	Vector origin;
+	Vector origin = pev->origin + pev->view_ofs;
 	
-	origin = pev->origin + pev->view_ofs;
-
 	return origin;
 }
 
@@ -989,6 +990,10 @@ void CBasePlayer::SetAnimation( PLAYER_ANIM playerAnim )
 	case PLAYER_SUPERJUMP:
 		m_IdealActivity = ACT_LEAP;
 		break;
+
+	case PLAYER_FALL:
+		m_IdealActivity = ACT_FALL;
+		break;
 	
 	case PLAYER_DIE:
 		m_IdealActivity = ACT_DIESIMPLE;
@@ -1010,6 +1015,7 @@ void CBasePlayer::SetAnimation( PLAYER_ANIM playerAnim )
 			break;
 		}
 		break;
+
 	case PLAYER_IDLE:
 	case PLAYER_WALK:
 		if ( !FBitSet( pev->flags, FL_ONGROUND ) && (m_Activity == ACT_HOP || m_Activity == ACT_LEAP) )	// Still jumping
@@ -1619,12 +1625,7 @@ void CBasePlayer::PlayerUse ( void )
 
 
 void CBasePlayer::Jump()
-{
-	Vector		vecWallCheckDir;// direction we're tracing a line to find a wall when walljumping
-	Vector		vecAdjustedVelocity;
-	Vector		vecSpot;
-	TraceResult	tr;
-	
+{	
 	if (FBitSet(pev->flags, FL_WATERJUMP))
 		return;
 	

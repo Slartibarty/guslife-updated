@@ -525,12 +525,11 @@ public:
 	void KeyValue( KeyValueData *pkvd );
 	void EXPORT MultiTouch( CBaseEntity *pOther );
 	void EXPORT HurtTouch ( CBaseEntity *pOther );
-	void EXPORT CDAudioTouch ( CBaseEntity *pOther );
 	void ActivateMultiTrigger( CBaseEntity *pActivator );
 	void EXPORT MultiWaitOver( void );
 	void EXPORT CounterUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 	void EXPORT ToggleUse ( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
-	void InitTrigger( void );
+	void InitTrigger( void ) const;
 
 	virtual int	ObjectCaps( void ) { return CBaseToggle :: ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
 };
@@ -542,7 +541,7 @@ LINK_ENTITY_TO_CLASS( trigger, CBaseTrigger );
 InitTrigger
 ================
 */
-void CBaseTrigger::InitTrigger( )
+void CBaseTrigger::InitTrigger( ) const
 {
 	// trigger angles are used for one-way touches.  An angle of 0 is assumed
 	// to mean no restrictions, so use a yaw of 360 instead.
@@ -2428,3 +2427,54 @@ void CTriggerCamera::Move()
 	float fraction = 2 * gpGlobals->frametime;
 	pev->velocity = ((pev->movedir * pev->speed) * fraction) + (pev->velocity * (1-fraction));
 }
+
+//===============================================================================
+// Trigger that starts the fall animation for players
+
+class CTriggerFall : public CBaseTrigger
+{
+public:
+	void Spawn();
+	void Precache();
+	void EXPORT FallTouch( CBaseEntity *pOther );
+};
+LINK_ENTITY_TO_CLASS( trigger_fall, CTriggerFall );
+
+void CTriggerFall::Spawn()
+{
+	Precache();
+	InitTrigger();
+	SetTouch( &CTriggerFall::FallTouch );
+}
+
+void CTriggerFall::Precache()
+{
+	PRECACHE_SOUND( "scream1.wav" );
+	PRECACHE_SOUND( "scream2.wav" );
+	PRECACHE_SOUND( "scream3.wav" );
+}
+
+void CTriggerFall::FallTouch( CBaseEntity *pOther )
+{
+	if ( pOther->IsPlayer() == FALSE )
+		return;
+
+	if ( pOther->IsAlive() == FALSE )
+		return;
+
+	switch( RANDOM_LONG(0,2) )
+	{
+	default:
+	case 0:	EMIT_SOUND(ENT(pOther->pev), CHAN_STATIC, "scream1.wav", 1, ATTN_NORM); break;
+	case 1: EMIT_SOUND(ENT(pOther->pev), CHAN_STATIC, "scream2.wav", 1, ATTN_NORM); break;
+	case 2: EMIT_SOUND(ENT(pOther->pev), CHAN_STATIC, "scream3.wav", 1, ATTN_NORM); break;
+	}
+	
+	pOther->TakeDamage( pev, pev, 500, DMG_NEVERGIB );
+	((CBasePlayer*)pOther)->SetAnimation( PLAYER_FALL );
+
+	// Make their model shrink away to nothing
+	pOther->pev->renderfx = kRenderFxExplode;
+	pOther->pev->health = -5;					// Setting this to -5 starts the client-side fall animation
+}
+
