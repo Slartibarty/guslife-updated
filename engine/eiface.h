@@ -14,6 +14,7 @@
 ****/
 #ifndef EIFACE_H
 #define EIFACE_H
+#pragma once
 
 #include "archtypes.h"     // DAL
 

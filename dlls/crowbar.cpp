@@ -317,24 +317,27 @@ void CCrowbar::WeaponIdle( void )
 		return;
 
 	int iAnim;
-	const float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0.0, 1.0 );
+	const float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0.f, 1.f );
 
 	if (flRand <= 0.7)
 	{
-		iAnim = CROWBAR_IDLE1; // Idle 3 is the slowidle
-		m_flTimeWeaponIdle = 36.0/13.0;
+		iAnim = CROWBAR_IDLE1;
+		//m_flTimeWeaponIdle = 36.0/13.0;
 	}
 	else if (flRand <= 0.85)
 	{
 		iAnim = CROWBAR_IDLE2; // fidget
-		m_flTimeWeaponIdle = 81.0/15.0;
+		//m_flTimeWeaponIdle = 81.0/15.0;
 	}
 	else
 	{
 		iAnim = CROWBAR_IDLE3; // fidget
-		m_flTimeWeaponIdle = 81.0/15.0;
+		//m_flTimeWeaponIdle = 81.0/15.0;
 	}
-	SendWeaponAnim( iAnim, 1 );
+
+	SendWeaponAnim( iAnim );
+
+	m_flTimeWeaponIdle = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 5, 10 ); // how long till we play an idle again.
 }
 
 

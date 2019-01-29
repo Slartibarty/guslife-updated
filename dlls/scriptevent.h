@@ -14,6 +14,7 @@
 ****/
 #ifndef SCRIPTEVENT_H
 #define SCRIPTEVENT_H
+#pragma once
 
 #define SCRIPT_EVENT_DEAD			1000		// character is now dead
 #define SCRIPT_EVENT_NOINTERRUPT	1001		// does not allow interrupt

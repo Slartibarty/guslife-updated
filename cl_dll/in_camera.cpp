@@ -7,7 +7,6 @@
 
 #include "hud.h"
 #include "cl_util.h"
-#include "camera.h"
 #include "kbutton.h"
 #include "cvardef.h"
 #include "usercmd.h"

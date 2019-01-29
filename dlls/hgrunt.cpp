@@ -29,7 +29,6 @@
 
 
 #include	"extdll.h"
-#include	"plane.h"
 #include	"util.h"
 #include	"cbase.h"
 #include	"monsters.h"
@@ -400,10 +399,7 @@ BOOL CHGrunt :: FCanCheckAttacks ( void )
 	{
 		return TRUE;
 	}
-	else
-	{
-		return FALSE;
-	}
+	return FALSE;
 }
 
 
@@ -2282,8 +2278,8 @@ Schedule_t* CHGrunt :: GetScheduleOfType ( int Type )
 	case SCHED_RANGE_ATTACK1:
 		{
 			// randomly stand or crouch
-			if (RANDOM_LONG(0,9) == 0)
-				m_fStanding = RANDOM_LONG(0,1);
+			//if (RANDOM_LONG(0,9) == 0)
+				m_fStanding = RANDOM_LONG(-5,5); // This looks cooler
 		 
 			if (m_fStanding)
 				return &slGruntRangeAttack1B[ 0 ];

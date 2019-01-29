@@ -15,7 +15,7 @@
 #include "pm_defs.h"
 #include "event_api.h"
 #include "pmtrace.h"
-#include "bench.h"
+//#include "bench.h"
 #include "screenfade.h"
 #include "shake.h"
 #include "hltv.h"
@@ -74,7 +74,7 @@ float		v_frametime, v_lastDistance;
 float		v_cameraRelaxAngle	= 5.0f;
 float		v_cameraFocusAngle	= 35.0f;
 int			v_cameraMode = CAM_MODE_FOCUS;
-qboolean	v_resetCamera = 1;
+bool		v_resetCamera = true;
 
 vec3_t ev_punchangle;
 
@@ -99,6 +99,9 @@ cvar_t	*v_ipitch_cycle;
 cvar_t	*v_iyaw_level;
 cvar_t	*v_iroll_level;
 cvar_t	*v_ipitch_level;
+
+// Slart commands
+cvar_t	*cl_viewmodel_fudge;
 
 float	v_idlescale;  // used by TFC for concussion grenade effect
 
@@ -525,9 +528,9 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	// FIXME, we send origin at 1/128 now, change this?
 	// the server protocol only specifies to 1/16 pixel, so add 1/32 in each axis
 	
-	pparams->vieworg[0] += 1.0/32;
-	pparams->vieworg[1] += 1.0/32;
-	pparams->vieworg[2] += 1.0/32;
+	//pparams->vieworg[0] += 1.0/32; // Slart, do I actually want this?
+	//pparams->vieworg[1] += 1.0/32;
+	//pparams->vieworg[2] += 1.0/32;
 
 	// Check for problems around water, move the viewer artificially if necessary 
 	// -- this prevents drawing errors in GL due to waves
@@ -634,6 +637,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	// Give gun our viewangles
 	VectorCopy ( pparams->cl_viewangles, view->angles );
 
+	// I don't think I want this
 	//v_idlescale = 1; // For just the gun sway
 
 	// set up gun position
@@ -648,9 +652,8 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	gEngfuncs.V_ApplyShake( view->origin, view->angles, 0.9 );
 
 	for ( i = 0; i < 3; i++ )
-	{
 		view->origin[ i ] += bob * 0.4 * pparams->forward[ i ];
-	}
+
 	view->origin[2] += bob;
 
 	// throw in a little tilt.
@@ -661,26 +664,24 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	// pushing the view origin down off of the same X/Z plane as the ent's origin will give the
 	// gun a very nice 'shifting' effect when the player looks up/down. If there is a problem
 	// with view model distortion, this may be a cause. (SJB). 
-	view->origin[2] -= 1;
+	if (cl_viewmodel_fudge->value)
+	{
+		view->origin[2] -= 1;
+	}
 
 	// fudge position around to keep amount of weapon visible
 	// roughly equal with different FOV
-	if (pparams->viewsize == 110)
-	{
-		view->origin[2] += 1;
-	}
-	else if (pparams->viewsize == 100)
-	{
-		view->origin[2] += 2;
-	}
-	else if (pparams->viewsize == 90)
-	{
-		view->origin[2] += 1;
-	}
-	else if (pparams->viewsize == 80)
-	{
-		view->origin[2] += 0.5;
-	}
+	//if (cl_viewmodel_fudge)
+	//{
+	//	if (pparams->viewsize == 110)
+	//		view->origin[2] += 1;
+	//	else if (pparams->viewsize == 100)
+	//		view->origin[2] += 2;
+	//	else if (pparams->viewsize == 90)
+	//		view->origin[2] += 1;
+	//	else if (pparams->viewsize == 80)
+	//		view->origin[2] += 0.5;
+	//}
 
 	// Add in the punchangle, if any
 	VectorAdd ( pparams->viewangles, pparams->punchangle, pparams->viewangles );
@@ -694,9 +695,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 #if 1
 	if ( !pparams->smoothing && pparams->onground && pparams->simorg[2] - oldz > 0)
 	{
-		float steptime;
-		
-		steptime = pparams->time - lasttime;
+		float steptime = pparams->time - lasttime;
 		if (steptime < 0)
 	//FIXME		I_Error ("steptime < 0");
 			steptime = 0;
@@ -1720,6 +1719,9 @@ void V_Init (void)
 	v_iyaw_level		= gEngfuncs.pfnRegisterVariable( "v_iyaw_level", "0.3", 0 );
 	v_iroll_level		= gEngfuncs.pfnRegisterVariable( "v_iroll_level", "0.1", 0 );
 	v_ipitch_level		= gEngfuncs.pfnRegisterVariable( "v_ipitch_level", "0.3", 0 );
+
+	// Slart commands
+	cl_viewmodel_fudge	= gEngfuncs.pfnRegisterVariable( "cl_viewmodel_fudge", "1", 0 );
 
 	// These cvars are not registered (so users can't cheat), so set the ->value field directly
 	// Register these cvars in V_Init() if needed for easy tweaking

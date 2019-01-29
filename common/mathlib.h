@@ -14,6 +14,9 @@
 ****/
 // mathlib.h
 
+// need header guards
+#pragma once
+
 typedef float vec_t;
 #ifndef DID_VEC3_T_DEFINE
 #define DID_VEC3_T_DEFINE

@@ -25,7 +25,7 @@
 #include "customentity.h"
 #include "gamerules.h"
 
-#define	EGON_PRIMARY_VOLUME		450
+#define	EGON_PRIMARY_VOLUME		400
 #define EGON_BEAM_SPRITE		"sprites/xbeam1.spr"
 #define EGON_FLARE_SPRITE		"sprites/XSpark1.spr"
 #define EGON_SOUND_OFF			"weapons/egon_off1.wav"
@@ -501,10 +501,9 @@ void CEgon::WeaponIdle( void )
 		 EndAttack();
 	
 	int iAnim;
+	const float flRand = RANDOM_FLOAT(0.f, 1.f);
 
-	float flRand = RANDOM_FLOAT(0,1);
-
-	if ( flRand <= 0.5 )
+	if ( flRand <= 0.75f )
 	{
 		iAnim = EGON_IDLE1;
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );

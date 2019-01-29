@@ -14,21 +14,21 @@
     <ProjectGuid>{69DDADC0-97F4-419E-86EB-C91781A0D2E0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>hldll</RootNamespace>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -66,6 +66,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <StringPooling>false</StringPooling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -103,6 +104,7 @@ exit 1
       <FloatingPointModel>Fast</FloatingPointModel>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <StringPooling>true</StringPooling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -171,7 +173,6 @@ exit 1
     <ClCompile Include="..\..\dlls\houndeye.cpp" />
     <ClCompile Include="..\..\dlls\h_ai.cpp" />
     <ClCompile Include="..\..\dlls\h_battery.cpp" />
-    <ClCompile Include="..\..\dlls\h_cine.cpp" />
     <ClCompile Include="..\..\dlls\h_cycler.cpp" />
     <ClCompile Include="..\..\dlls\h_export.cpp" />
     <ClCompile Include="..\..\dlls\ichthyosaur.cpp" />
@@ -186,10 +187,12 @@ exit 1
     <ClCompile Include="..\..\dlls\mortar.cpp" />
     <ClCompile Include="..\..\dlls\mp5.cpp" />
     <ClCompile Include="..\..\dlls\multiplay_gamerules.cpp" />
+    <ClCompile Include="..\..\dlls\newdoors.cpp" />
     <ClCompile Include="..\..\dlls\nihilanth.cpp" />
     <ClCompile Include="..\..\dlls\nodes.cpp" />
     <ClCompile Include="..\..\dlls\observer.cpp" />
     <ClCompile Include="..\..\dlls\osprey.cpp" />
+    <ClCompile Include="..\..\dlls\otis.cpp" />
     <ClCompile Include="..\..\dlls\pathcorner.cpp" />
     <ClCompile Include="..\..\dlls\plane.cpp" />
     <ClCompile Include="..\..\dlls\plats.cpp" />
@@ -230,7 +233,48 @@ exit 1
     <ClCompile Include="..\..\pm_shared\pm_shared.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\common\beamdef.h" />
+    <ClInclude Include="..\..\common\cl_entity.h" />
+    <ClInclude Include="..\..\common\com_model.h" />
+    <ClInclude Include="..\..\common\const.h" />
+    <ClInclude Include="..\..\common\con_nprint.h" />
+    <ClInclude Include="..\..\common\crc.h" />
+    <ClInclude Include="..\..\common\cvardef.h" />
+    <ClInclude Include="..\..\common\demo_api.h" />
+    <ClInclude Include="..\..\common\director_cmds.h" />
+    <ClInclude Include="..\..\common\dlight.h" />
+    <ClInclude Include="..\..\common\dll_state.h" />
+    <ClInclude Include="..\..\common\entity_state.h" />
+    <ClInclude Include="..\..\common\entity_types.h" />
+    <ClInclude Include="..\..\common\enums.h" />
+    <ClInclude Include="..\..\common\event_api.h" />
+    <ClInclude Include="..\..\common\event_args.h" />
+    <ClInclude Include="..\..\common\event_flags.h" />
+    <ClInclude Include="..\..\common\hltv.h" />
+    <ClInclude Include="..\..\common\interface.h" />
+    <ClInclude Include="..\..\common\in_buttons.h" />
+    <ClInclude Include="..\..\common\ivoicetweak.h" />
+    <ClInclude Include="..\..\common\mathlib.h" />
+    <ClInclude Include="..\..\common\netadr.h" />
+    <ClInclude Include="..\..\common\net_api.h" />
+    <ClInclude Include="..\..\common\nowin.h" />
+    <ClInclude Include="..\..\common\parsemsg.h" />
+    <ClInclude Include="..\..\common\particledef.h" />
     <ClInclude Include="..\..\common\Platform.h" />
+    <ClInclude Include="..\..\common\pmtrace.h" />
+    <ClInclude Include="..\..\common\port.h" />
+    <ClInclude Include="..\..\common\qfont.h" />
+    <ClInclude Include="..\..\common\ref_params.h" />
+    <ClInclude Include="..\..\common\r_efx.h" />
+    <ClInclude Include="..\..\common\r_studioint.h" />
+    <ClInclude Include="..\..\common\screenfade.h" />
+    <ClInclude Include="..\..\common\Sequence.h" />
+    <ClInclude Include="..\..\common\studio_event.h" />
+    <ClInclude Include="..\..\common\triangleapi.h" />
+    <ClInclude Include="..\..\common\usercmd.h" />
+    <ClInclude Include="..\..\common\weaponinfo.h" />
+    <ClInclude Include="..\..\common\winsani_in.h" />
+    <ClInclude Include="..\..\common\winsani_out.h" />
     <ClInclude Include="..\..\dlls\activity.h" />
     <ClInclude Include="..\..\dlls\activitymap.h" />
     <ClInclude Include="..\..\dlls\animation.h" />
@@ -247,9 +291,11 @@ exit 1
     <ClInclude Include="..\..\dlls\extdll.h" />
     <ClInclude Include="..\..\dlls\flyingmonster.h" />
     <ClInclude Include="..\..\dlls\func_break.h" />
+    <ClInclude Include="..\..\dlls\game.h" />
     <ClInclude Include="..\..\dlls\gamerules.h" />
     <ClInclude Include="..\..\dlls\hornet.h" />
     <ClInclude Include="..\..\dlls\items.h" />
+    <ClInclude Include="..\..\dlls\maprules.h" />
     <ClInclude Include="..\..\dlls\monsterevent.h" />
     <ClInclude Include="..\..\dlls\monsters.h" />
     <ClInclude Include="..\..\dlls\nodes.h" />
@@ -262,6 +308,7 @@ exit 1
     <ClInclude Include="..\..\dlls\skill.h" />
     <ClInclude Include="..\..\dlls\soundent.h" />
     <ClInclude Include="..\..\dlls\spectator.h" />
+    <ClInclude Include="..\..\dlls\squad.h" />
     <ClInclude Include="..\..\dlls\squadmonster.h" />
     <ClInclude Include="..\..\dlls\talkmonster.h" />
     <ClInclude Include="..\..\dlls\teamplay_gamerules.h" />
@@ -269,7 +316,18 @@ exit 1
     <ClInclude Include="..\..\dlls\util.h" />
     <ClInclude Include="..\..\dlls\vector.h" />
     <ClInclude Include="..\..\dlls\weapons.h" />
+    <ClInclude Include="..\..\dlls\wxdebug.h" />
+    <ClInclude Include="..\..\engine\anorms.h" />
+    <ClInclude Include="..\..\engine\APIProxy.h" />
+    <ClInclude Include="..\..\engine\cdll_int.h" />
+    <ClInclude Include="..\..\engine\custom.h" />
+    <ClInclude Include="..\..\engine\customentity.h" />
+    <ClInclude Include="..\..\engine\edict.h" />
     <ClInclude Include="..\..\engine\eiface.h" />
+    <ClInclude Include="..\..\engine\progdefs.h" />
+    <ClInclude Include="..\..\engine\progs.h" />
+    <ClInclude Include="..\..\engine\shake.h" />
+    <ClInclude Include="..\..\engine\studio.h" />
     <ClInclude Include="..\..\pm_shared\pm_debug.h" />
     <ClInclude Include="..\..\pm_shared\pm_defs.h" />
     <ClInclude Include="..\..\pm_shared\pm_info.h" />

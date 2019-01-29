@@ -14,6 +14,7 @@
 ****/
 #ifndef ANIMATION_H
 #define ANIMATION_H
+#pragma once
 
 #define ACTIVITY_NOT_AVAILABLE		-1
 

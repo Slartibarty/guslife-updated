@@ -266,16 +266,15 @@ void CMP5::WeaponIdle( void )
 		return;
 
 	int iAnim;
-	switch ( RANDOM_LONG( 0, 1 ) )
+	const float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0, 1 );
+
+	if (flRand <= 0.6f)
 	{
-	case 0:	
-		iAnim = MP5_LONGIDLE;	
-		break;
-	
-	default:
-	case 1:
+		iAnim = MP5_LONGIDLE;
+	}
+	else
+	{
 		iAnim = MP5_IDLE1;
-		break;
 	}
 
 	SendWeaponAnim( iAnim );

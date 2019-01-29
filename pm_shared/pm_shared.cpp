@@ -15,7 +15,7 @@
 
 #include "Platform.h"
 
-#include <assert.h>
+#include <cassert>
 #include "mathlib.h"
 #include "const.h"
 #include "usercmd.h"
@@ -23,11 +23,11 @@
 #include "pm_shared.h"
 #include "pm_movevars.h"
 #include "pm_debug.h"
-#include <stdio.h>  // NULL
-#include <math.h>   // sqrt
-#include <string.h> // strcpy
-#include <stdlib.h> // atoi
-#include <ctype.h>  // isspace
+#include <cstdio>  // NULL
+#include <cmath>   // sqrt
+#include <cstring> // strcpy
+#include <cstdlib> // atoi
+#include <cctype>  // isspace
 
 #ifdef CLIENT_DLL
 	// Spectator Mode
@@ -172,11 +172,10 @@ void PM_SortTextures( void )
 {
 	// Bubble sort, yuck, but this only occurs at startup and it's only 512 elements...
 	//
-	int i, j;
 
-	for ( i = 0 ; i < gcTextures; i++ )
+	for ( int i = 0 ; i < gcTextures; i++ )
 	{
-		for ( j = i + 1; j < gcTextures; j++ )
+		for ( int j = i + 1; j < gcTextures; j++ )
 		{
 			if ( stricmp( grgszTextureName[ i ], grgszTextureName[ j ] ) > 0 )
 			{
@@ -669,12 +668,10 @@ See if the player has a bogus velocity value.
 */
 void PM_CheckVelocity ()
 {
-	int		i;
-
 //
 // bound velocity
 //
-	for (i=0 ; i<3 ; i++)
+	for (int i = 0 ; i<3 ; i++)
 	{
 		// See if it's bogus.
 		if (IS_NAN(pmove->velocity[i]))
@@ -2058,18 +2055,12 @@ void PM_LadderMove( physent_t *pLadder )
 {
 	vec3_t		ladderCenter;
 	trace_t		trace;
-	qboolean	onFloor;
+	bool		onFloor;
 	vec3_t		floor;
 	vec3_t		modelmins, modelmaxs;
 
 	if ( pmove->movetype == MOVETYPE_NOCLIP )
 		return;
-	
-#if defined( _TFC )
-	// this is how TFC freezes players, so we don't want them climbing ladders
-	if ( pmove->maxspeed <= 1.0 )
-		return;
-#endif
 
 	pmove->PM_GetModelBounds( pLadder->model, modelmins, modelmaxs );
 
@@ -2136,7 +2127,6 @@ void PM_LadderMove( physent_t *pLadder )
 			if ( forward != 0 || right != 0 )
 			{
 				vec3_t velocity, perp, cross, lateral, tmp;
-				float normal;
 
 				//ALERT(at_console, "pev %.2f %.2f %.2f - ",
 				//	pev->velocity.x, pev->velocity.y, pev->velocity.z);
@@ -2156,7 +2146,7 @@ void PM_LadderMove( physent_t *pLadder )
 
 
 				// decompose velocity into ladder plane
-				normal = DotProduct( velocity, trace.plane.normal );
+				float normal = DotProduct( velocity, trace.plane.normal );
 				// This is the velocity into the face of the ladder
 				VectorScale( trace.plane.normal, normal, cross );
 
@@ -2404,7 +2394,6 @@ PM_NoClip
 */
 void PM_NoClip()
 {
-	int			i;
 	vec3_t		wishvel;
 	float		fmove, smove;
 //	float		currentspeed, addspeed, accelspeed;
@@ -2416,7 +2405,7 @@ void PM_NoClip()
 	VectorNormalize ( pmove->forward ); 
 	VectorNormalize ( pmove->right );
 
-	for (i=0 ; i<3 ; i++)       // Determine x and y parts of velocity
+	for (int i = 0 ; i<3 ; i++)       // Determine x and y parts of velocity
 	{
 		wishvel[i] = pmove->forward[i]*fmove + pmove->right[i]*smove;
 	}
@@ -2471,23 +2460,9 @@ PM_Jump
 */
 void PM_Jump (void)
 {
-	int i;
-	qboolean tfc = false;
-
-	qboolean cansuperjump = false;
-
 	if (pmove->dead)
 	{
 		pmove->oldbuttons |= IN_JUMP ;	// don't jump again until released
-		return;
-	}
-
-	tfc = atoi( pmove->PM_Info_ValueForKey( pmove->physinfo, "tfc" ) ) == 1 ? true : false;
-
-	// Spy that's feigning death cannot jump
-	if ( tfc && 
-		( pmove->deadflag == ( DEAD_DISCARDBODY + 1 ) ) )
-	{
 		return;
 	}
 
@@ -2557,17 +2532,24 @@ void PM_Jump (void)
 
 	PM_PreventMegaBunnyJumping();
 
-	if ( tfc )
-	{
-		pmove->PM_PlaySound( CHAN_BODY, "player/plyrjmp8.wav", 0.5, ATTN_NORM, 0, PITCH_NORM );
-	}
-	else
-	{
-		PM_PlayStepSound( PM_MapTextureTypeStepType( pmove->chtexturetype ), 1.0 );
-	}
+	// Quake style
+
+	//switch ( pmove->RandomLong(0, 1) )
+	//{
+	//	case 0:
+	//		pmove->PM_PlaySound( CHAN_BODY, "player/pl_jump1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM );
+	//		break;
+	//	case 1:
+	//		pmove->PM_PlaySound( CHAN_BODY, "player/pl_jump2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM );
+	//		break;
+	//}
+
+	// Uncomment for regular HL jumping
+
+	PM_PlayStepSound( PM_MapTextureTypeStepType( pmove->chtexturetype ), 1.0 );
 
 	// See if user can super long jump?
-	cansuperjump = atoi( pmove->PM_Info_ValueForKey( pmove->physinfo, "slj" ) ) == 1 ? true : false;
+	const bool cansuperjump = atoi(pmove->PM_Info_ValueForKey(pmove->physinfo, "slj")) == 1 ? true : false;
 
 	// Acclerate upward
 	// If we are ducking...
@@ -2582,7 +2564,7 @@ void PM_Jump (void)
 		{
 			pmove->punchangle[0] = -5;
 
-			for (i =0; i < 2; i++)
+			for (int i = 0; i < 2; i++)
 			{
 				pmove->velocity[i] = pmove->forward[i] * PLAYER_LONGJUMP_SPEED * 1.6;
 			}
@@ -3014,13 +2996,13 @@ void PM_PlayerMove ( qboolean server )
 		}
 	}
 
-#if !defined( _TFC )
+//#if !defined( _TFC )
 	// Slow down, I'm pulling it! (a box maybe) but only when I'm standing on ground
 	if ( ( pmove->onground != -1 ) && ( pmove->cmd.buttons & IN_USE) )
 	{
 		VectorScale( pmove->velocity, 0.3, pmove->velocity );
 	}
-#endif
+//#endif
 
 	// Handle movement
 	switch ( pmove->movetype )

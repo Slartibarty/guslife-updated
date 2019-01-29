@@ -14,21 +14,21 @@
     <ProjectGuid>{DC1DD765-CFEB-47DA-A2EA-9F1E20A24272}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>hl_cdll</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>v141_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>v141_xp</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -61,11 +61,11 @@
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;CLIENT_DLL;CLIENT_WEAPONS;HL_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalIncludeDirectories>..\..\dlls;..\..\cl_dll;..\..\public;..\..\common;..\..\pm_shared;..\..\engine;..\..\utils\vgui\include;..\..\game_shared;..\..\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <StringPooling>false</StringPooling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -100,11 +100,11 @@ exit 1
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;CLIENT_DLL;CLIENT_WEAPONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalIncludeDirectories>..\..\dlls;..\..\cl_dll;..\..\public;..\..\common;..\..\pm_shared;..\..\engine;..\..\utils\vgui\include;..\..\game_shared;..\..\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <StringPooling>true</StringPooling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -245,8 +245,48 @@ exit 1
     <ClInclude Include="..\..\cl_dll\vgui_SpectatorPanel.h" />
     <ClInclude Include="..\..\cl_dll\view.h" />
     <ClInclude Include="..\..\cl_dll\wrect.h" />
+    <ClInclude Include="..\..\common\beamdef.h" />
+    <ClInclude Include="..\..\common\cl_entity.h" />
+    <ClInclude Include="..\..\common\com_model.h" />
+    <ClInclude Include="..\..\common\const.h" />
+    <ClInclude Include="..\..\common\con_nprint.h" />
+    <ClInclude Include="..\..\common\crc.h" />
+    <ClInclude Include="..\..\common\cvardef.h" />
+    <ClInclude Include="..\..\common\demo_api.h" />
+    <ClInclude Include="..\..\common\director_cmds.h" />
+    <ClInclude Include="..\..\common\dlight.h" />
+    <ClInclude Include="..\..\common\dll_state.h" />
+    <ClInclude Include="..\..\common\entity_state.h" />
+    <ClInclude Include="..\..\common\entity_types.h" />
+    <ClInclude Include="..\..\common\enums.h" />
+    <ClInclude Include="..\..\common\event_api.h" />
+    <ClInclude Include="..\..\common\event_args.h" />
+    <ClInclude Include="..\..\common\event_flags.h" />
+    <ClInclude Include="..\..\common\hltv.h" />
+    <ClInclude Include="..\..\common\interface.h" />
+    <ClInclude Include="..\..\common\in_buttons.h" />
+    <ClInclude Include="..\..\common\ivoicetweak.h" />
+    <ClInclude Include="..\..\common\mathlib.h" />
+    <ClInclude Include="..\..\common\netadr.h" />
+    <ClInclude Include="..\..\common\net_api.h" />
+    <ClInclude Include="..\..\common\nowin.h" />
     <ClInclude Include="..\..\common\parsemsg.h" />
+    <ClInclude Include="..\..\common\particledef.h" />
     <ClInclude Include="..\..\common\Platform.h" />
+    <ClInclude Include="..\..\common\pmtrace.h" />
+    <ClInclude Include="..\..\common\port.h" />
+    <ClInclude Include="..\..\common\qfont.h" />
+    <ClInclude Include="..\..\common\ref_params.h" />
+    <ClInclude Include="..\..\common\r_efx.h" />
+    <ClInclude Include="..\..\common\r_studioint.h" />
+    <ClInclude Include="..\..\common\screenfade.h" />
+    <ClInclude Include="..\..\common\Sequence.h" />
+    <ClInclude Include="..\..\common\studio_event.h" />
+    <ClInclude Include="..\..\common\triangleapi.h" />
+    <ClInclude Include="..\..\common\usercmd.h" />
+    <ClInclude Include="..\..\common\weaponinfo.h" />
+    <ClInclude Include="..\..\common\winsani_in.h" />
+    <ClInclude Include="..\..\common\winsani_out.h" />
     <ClInclude Include="..\..\game_shared\vgui_scrollbar2.h" />
     <ClInclude Include="..\..\game_shared\vgui_slider2.h" />
     <ClInclude Include="..\..\game_shared\voice_banmgr.h" />

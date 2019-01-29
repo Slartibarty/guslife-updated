@@ -501,7 +501,7 @@ void CTripmine::WeaponIdle( void )
 	}
 
 	int iAnim;
-	float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0, 1 );
+	const float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0.f, 1.f );
 	if (flRand <= 0.25)
 	{
 		iAnim = TRIPMINE_IDLE1;

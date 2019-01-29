@@ -136,8 +136,6 @@ int	CHoundeye :: Classify ( void )
 //=========================================================
 BOOL CHoundeye :: FValidateHintType ( short sHint )
 {
-	int i;
-
 	static short sHoundHints[] =
 	{
 		HINT_WORLD_MACHINERY,
@@ -146,7 +144,7 @@ BOOL CHoundeye :: FValidateHintType ( short sHint )
 		HINT_WORLD_ALIEN_BLOOD,
 	};
 
-	for ( i = 0 ; i < ARRAYSIZE ( sHoundHints ) ; i++ )
+	for ( int i = 0 ; i < ARRAYSIZE ( sHoundHints ) ; i++ )
 	{
 		if ( sHoundHints[ i ] == sHint )
 		{
@@ -206,9 +204,7 @@ BOOL CHoundeye :: CheckRangeAttack1 ( float flDot, float flDist )
 //=========================================================
 void CHoundeye :: SetYawSpeed ( void )
 {
-	int ys;
-
-	ys = 90;
+	int ys = 90;
 
 	switch ( m_Activity )
 	{
@@ -238,15 +234,13 @@ void CHoundeye :: SetYawSpeed ( void )
 //=========================================================
 void CHoundeye :: SetActivity ( Activity NewActivity )
 {
-	int	iSequence;
-
 	if ( NewActivity == m_Activity )
 		return;
 
 	if ( m_MonsterState == MONSTERSTATE_COMBAT && NewActivity == ACT_IDLE && RANDOM_LONG(0,1) )
 	{
 		// play pissed idle.
-		iSequence = LookupSequence( "madidle" );
+		int iSequence = LookupSequence("madidle");
 
 		m_Activity = NewActivity; // Go ahead and set this so it doesn't keep trying when the anim is not present
 	

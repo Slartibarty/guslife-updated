@@ -203,24 +203,26 @@ void CGlock::WeaponIdle( void )
 	if (m_iClip != 0)
 	{
 		int iAnim;
-		const float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0.0, 1.0 );
+		const float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0.f, 1.f );
 
 		if (flRand <= 0.7)
 		{
 			iAnim = GLOCK_IDLE3; // Idle 3 is the slowidle
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 49.0 / 16;
+			//m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 49.0 / 16;
 		}
 		else if (flRand <= 0.8)
 		{
 			iAnim = GLOCK_IDLE2; // fidget
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 40.0 / 16.0;
+			//m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 40.0 / 16.0;
 		}
 		else
 		{
 			iAnim = GLOCK_IDLE1; // fidget
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 60.0 / 16.0;
+			//m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 60.0 / 16.0;
 		}
-		SendWeaponAnim( iAnim, 1 );
+		SendWeaponAnim( iAnim );
+
+		m_flTimeWeaponIdle = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 ); // how long till we play an idle again.
 	}
 }
 

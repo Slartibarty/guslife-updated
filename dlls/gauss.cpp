@@ -567,26 +567,24 @@ void CGauss::WeaponIdle( void )
 	else
 	{
 		int iAnim;
-		float flRand = RANDOM_FLOAT(0, 1);
-		if (flRand <= 0.5)
+		const float flRand = RANDOM_FLOAT(0.0f, 1.0f);
+		if (flRand <= 0.5f)
 		{
 			iAnim = GAUSS_IDLE;
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 61.0 / 15.0;
 		}
-		else if (flRand <= 0.75)
+		else if (flRand <= 0.75f)
 		{
 			iAnim = GAUSS_IDLE2;
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 61.0 / 15.0;
 		}
 		else
 		{
 			iAnim = GAUSS_FIDGET;
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 3;
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 91.0 / 30.0;
 		}
-
-		return;
-		SendWeaponAnim( iAnim );
 		
+		SendWeaponAnim( iAnim );
 	}
 }
 

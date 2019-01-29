@@ -1706,7 +1706,9 @@ void CTestEffect::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE u
 	m_flStartTime = gpGlobals->time;
 }
 
-
+//
+// START BLOOD EFFECTS
+//
 
 // Blood effects
 class CBlood : public CPointEntity
@@ -1822,7 +1824,69 @@ void CBlood::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useTyp
 	}
 }
 
+//
+// cine_blood
+//
+// e3/prealpha only. 
+class CCineBlood : public CBaseEntity
+{
+public:
+	void Spawn( void );
+	void EXPORT BloodStart ( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
+	void EXPORT BloodGush ( void );
+};
 
+LINK_ENTITY_TO_CLASS( cine_blood, CCineBlood );
+
+void CCineBlood :: BloodGush ( void )
+{
+	Vector	vecSplatDir;
+	TraceResult	tr;
+	pev->nextthink = gpGlobals->time + 0.1;
+
+	UTIL_MakeVectors(pev->angles);
+	if ( pev->health-- < 0 )
+		REMOVE_ENTITY(ENT(pev));
+// CHANGE_METHOD ( ENT(pev), em_think, SUB_Remove );
+
+	if ( RANDOM_FLOAT ( 0 , 1 ) < 0.7 )// larger chance of globs
+	{
+		UTIL_BloodDrips( pev->origin, UTIL_RandomBloodVector(), BLOOD_COLOR_RED, 10 );
+	}
+	else// slim chance of geyser
+	{
+		UTIL_BloodStream( pev->origin, UTIL_RandomBloodVector(), BLOOD_COLOR_RED, RANDOM_LONG(50, 150) );
+	}
+
+	if ( RANDOM_FLOAT ( 0, 1 ) < 0.75 )
+	{// decals the floor with blood.
+		vecSplatDir = Vector ( 0 , 0 , -1 );
+		vecSplatDir = vecSplatDir + (RANDOM_FLOAT(-1,1) * 0.6 * gpGlobals->v_right) + (RANDOM_FLOAT(-1,1) * 0.6 * gpGlobals->v_forward);// randomize a bit
+		UTIL_TraceLine( pev->origin + Vector ( 0, 0 , 64) , pev->origin + vecSplatDir * 256, ignore_monsters, ENT(pev), &tr);
+		if ( tr.flFraction != 1.0 )
+		{
+			// Decal with a bloodsplat
+			UTIL_BloodDecalTrace( &tr, BLOOD_COLOR_RED );
+		}
+	}
+}
+
+void CCineBlood :: BloodStart ( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
+{
+	SetThink( &CCineBlood::BloodGush );
+	pev->nextthink = gpGlobals->time;// now!
+}
+
+void CCineBlood :: Spawn ( void )
+{
+	pev->solid = SOLID_NOT;
+	SetUse ( &CCineBlood::BloodStart );
+	pev->health = 20;//hacked health to count iterations
+}
+
+//
+// END BLOOD EFFECTS
+//
 
 // Screen shake
 class CShake : public CPointEntity
@@ -2263,7 +2327,7 @@ void CItemSoda::CanTouch ( CBaseEntity *pOther )
 //=========================================================
 // Simple studio model
 //=========================================================
-#define SF_ENVSTUDIO_SOLIDBBOX 1
+//#define SF_ENVSTUDIO_SOLIDBBOX 1
 
 class CEnvStudio : public CBaseEntity
 {
@@ -2298,16 +2362,28 @@ void CEnvStudio::Precache()
 //=========================================================
 // Testing entity
 //=========================================================
-//class CEnvTest : public CSprite
-//{
-//public:
-//	void Spawn();
-//};
-//
-//LINK_ENTITY_TO_CLASS( env_test, CEnvTest );
-//
-//void CEnvTest::Spawn()
-//{
-//	pev->effects = TE_TAREXPLOSION;
-//}
+class CEnvTest : public CSprite
+{
+public:
+	void Spawn();
+};
+
+LINK_ENTITY_TO_CLASS( env_test, CEnvTest );
+
+void CEnvTest::Spawn()
+{				
+	MESSAGE_BEGIN( MSG_BROADCAST, SVC_TEMPENTITY );
+		WRITE_BYTE( TE_ELIGHT );
+		WRITE_SHORT( entindex( ) + 0 );		// entity, attachment
+		WRITE_COORD( pev->origin.x );		// origin
+		WRITE_COORD( pev->origin.y );
+		WRITE_COORD( pev->origin.z );
+		WRITE_COORD( 16 );	// radius
+		WRITE_BYTE( 255 );	// R
+		WRITE_BYTE( 192 );	// G
+		WRITE_BYTE( 64 );	// B
+		WRITE_BYTE( 22 );	// life * 10
+		WRITE_COORD( -32 ); // decay
+	MESSAGE_END();
+}
 

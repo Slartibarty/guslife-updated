@@ -14,6 +14,8 @@
 ****/
 #ifndef CONST_H
 #define CONST_H
+#pragma once
+
 //
 // Constants shared by the engine and dlls
 // This header file included by engine files and DLL files.
@@ -723,14 +725,12 @@ typedef unsigned char 		byte;
 typedef unsigned short 		word;
 #define _DEF_BYTE_
 
-#undef true
-#undef false
+// C only
+//typedef enum {false, true}	qboolean;
 
-#ifndef __cplusplus
-typedef enum {false, true}	qboolean;
-#else 
+//The infamous qboolean
+
 typedef int qboolean;
-#endif
 
 typedef struct
 {
