@@ -138,7 +138,7 @@ ControlPanel::ControlPanel (mxWindow *parent)
 	leWidth = new mxLineEdit (wFullscreen, 5, 5, 50, 22, "800");
 	mxLabel *lX = new mxLabel (wFullscreen, 65, 7, 22, 22, "x");
 	leHeight = new mxLineEdit (wFullscreen, 82, 5, 50, 22, "600");
-	cb3dfxOpenGL = new mxCheckBox (wFullscreen, 5, 30, 130, 22, "3Dfx OpenGL");
+	//cb3dfxOpenGL = new mxCheckBox (wFullscreen, 5, 30, 130, 22, "3Dfx OpenGL");
 	mxButton *bView = new mxButton (wFullscreen, 140, 5, 75, 22, "Fullscreen!", IDC_FULLSCREEN);
 #endif
 
@@ -985,7 +985,7 @@ ControlPanel::centerView ()
 void
 ControlPanel::fullscreen ()
 {
-	g_viewerSettings.use3dfx = cb3dfxOpenGL->isChecked ();
+	//g_viewerSettings.use3dfx = cb3dfxOpenGL->isChecked ();
 	swap3dfxgl (g_viewerSettings.use3dfx);
 
 	char szName[256];
@@ -998,7 +998,7 @@ ControlPanel::fullscreen ()
 	g_viewerSettings.width = atoi (leWidth->getLabel ());
 	g_viewerSettings.height = atoi (leHeight->getLabel ());
 	g_viewerSettings.cds = true;
-	g_viewerSettings.use3dfx = cb3dfxOpenGL->isChecked ();
+	//g_viewerSettings.use3dfx = cb3dfxOpenGL->isChecked ();
 
 	if (SaveViewerSettings ("hlmv.cfg"))
 	{

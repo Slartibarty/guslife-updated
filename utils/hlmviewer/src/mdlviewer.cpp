@@ -35,7 +35,7 @@ extern bool bFilterTextures;
 
 
 MDLViewer *g_MDLViewer = 0;
-char g_appTitle[] = "Half-Life Model Viewer v1.24";
+char g_appTitle[] = "Half-Life Model Viewer v1.25";
 static char recentFiles[8][256] = { "", "", "", "", "", "", "", "" };
 
 
@@ -96,7 +96,7 @@ MDLViewer::saveRecentFiles ()
 bool
 swap3dfxgl (bool b)
 {
-#ifdef WIN32
+#ifdef WIN32__
 	//
 	// rename opengl drivers to 3dfxgl
 	//
@@ -121,6 +121,8 @@ swap3dfxgl (bool b)
 	SetCurrentDirectory (szPath);
 
 	return (ret == TRUE);
+#else
+	return TRUE;
 #endif
 }
 
@@ -453,7 +455,7 @@ MDLViewer::handleEvent (mxEvent *event)
 
 		case IDC_HELP_ABOUT:
 			mxMessageBox (this,
-				"Half-Life Model Viewer v1.24 (c) 1999 by Mete Ciragan\n\n"
+				"Half-Life Model Viewer v1.25 (c) 2002 by Mete Ciragan\n\n"
 				"Left-drag to rotate.\n"
 				"Right-drag to zoom.\n"
 				"Shift-left-drag to x-y-pan.\n\n"
@@ -534,7 +536,7 @@ main (int argc, char *argv[])
 	if (!strcmp (cmdline, "-fullscreen"))
 	{
 #ifdef WIN32
-		mxGlWindow::setFormat (mxGlWindow::FormatDouble, 16, 16);
+		mxGlWindow::setFormat (mxGlWindow::FormatDouble, 32, 24);
 		mx::init (argc, argv);
 
 		if (!LoadViewerSettings ("hlmv.cfg"))
@@ -609,6 +611,8 @@ main (int argc, char *argv[])
 	mx::init (argc, argv);
 	g_MDLViewer = new MDLViewer ();
 	g_MDLViewer->setMenuBar (g_MDLViewer->getMenuBar ());
+	g_MDLViewer->setBounds (20, 20, 640, 540);
+	g_MDLViewer->setVisible (true);
 
 	//LoadViewerSettings ("hlmv.cfg");
 
