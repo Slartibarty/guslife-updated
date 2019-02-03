@@ -67,8 +67,6 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\Release\</OutDir>
-    <IntDir>.\Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>mxtk</TargetName>
   </PropertyGroup>
@@ -77,8 +75,6 @@
     <TargetName>mxtk</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\Debug\</OutDir>
-    <IntDir>.\Debug\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>mxtkd</TargetName>
   </PropertyGroup>
@@ -104,9 +100,7 @@
       <Culture>0x0807</Culture>
     </ResourceCompile>
     <Bscmake />
-    <Lib>
-      <OutputFile>..\lib\mxtk.lib</OutputFile>
-    </Lib>
+    <Lib />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -126,9 +120,7 @@
       <Culture>0x0807</Culture>
     </ResourceCompile>
     <Bscmake />
-    <Lib>
-      <OutputFile>..\lib\mxtk.lib</OutputFile>
-    </Lib>
+    <Lib />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -146,9 +138,7 @@
       <Culture>0x0807</Culture>
     </ResourceCompile>
     <Bscmake />
-    <Lib>
-      <OutputFile>..\lib\mxtkd.lib</OutputFile>
-    </Lib>
+    <Lib />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -166,9 +156,7 @@
       <Culture>0x0807</Culture>
     </ResourceCompile>
     <Bscmake />
-    <Lib>
-      <OutputFile>..\lib\mxtkd.lib</OutputFile>
-    </Lib>
+    <Lib />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\common\mxBmp.cpp" />

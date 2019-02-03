@@ -506,7 +506,7 @@ PAKViewer::openPAKFile (const char *pakFile)
 			else
 				tok = &lumps[i].name[7];
 
-			int i = 1;
+			i = 1; // Fixes declaration hiding
 			while (tok)
 			{
 				char *end = strchr (tok, '/');
