@@ -1138,6 +1138,22 @@ int USENTENCEG_Pick(int isentenceg, char *szfound)
 	return -1;
 }
 
+int USEQUENCE_SENTENCEG_Pick(const char* szgroupname, char* szfound)
+{
+	int picked = -1;
+	auto pSentence = g_engfuncs.pfnSequencePickSentence(szgroupname, 0, &picked);
+
+	if (pSentence)
+	{
+		sprintf(szfound, "#%d", pSentence->index);
+		return picked;
+	}
+
+	*szfound = '\0';
+
+	return -1;
+}
+
 // ===================== SENTENCE GROUPS, MAIN ROUTINES ========================
 
 // Given sentence group rootname (name without number suffix),
@@ -1187,8 +1203,8 @@ int SENTENCEG_PlayRndI(edict_t *entity, int isentenceg,
 
 // same as above, but takes sentence group name instead of index
 
-int SENTENCEG_PlayRndSz(edict_t *entity, const char *szgroupname, 
-					  float volume, float attenuation, int flags, int pitch)
+int SENTENCEG_PlayRndSz(edict_t *entity, const char *szgroupname,
+	float volume, float attenuation, int flags, int pitch)
 {
 	char name[64];
 	int ipick;
@@ -1199,14 +1215,25 @@ int SENTENCEG_PlayRndSz(edict_t *entity, const char *szgroupname,
 
 	name[0] = 0;
 
-	isentenceg = SENTENCEG_GetIndex(szgroupname);
-	if (isentenceg < 0)
+	auto pSentence = g_engfuncs.pfnSequencePickSentence(szgroupname, 0, &ipick);
+
+	if (pSentence)
 	{
-		ALERT( at_console, "No such sentence group %s\n", szgroupname );
-		return -1;
+		sprintf(name, "#%d", pSentence->index);
 	}
 
-	ipick = USENTENCEG_Pick(isentenceg, name);
+	if (!pSentence || ipick < 0 || !name[0])
+	{
+		isentenceg = SENTENCEG_GetIndex(szgroupname);
+		if (isentenceg < 0)
+		{
+			ALERT(at_console, "No such sentence group %s\n", szgroupname);
+			return -1;
+		}
+
+		ipick = USENTENCEG_Pick(isentenceg, name);
+	}
+
 	if (ipick >= 0 && name[0])
 		EMIT_SOUND_DYN(entity, CHAN_VOICE, name, volume, attenuation, flags, pitch);
 

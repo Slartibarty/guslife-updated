@@ -29,7 +29,7 @@ public:
 
 	CTriggerSequence();
 
-	int ObjectCaps() override { return CLASS_NONE; }
+	int ObjectCaps() override { return CBaseDelay::ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
 
 	void KeyValue(KeyValueData* pkvd) override;
 	void Precache() override;
@@ -349,7 +349,7 @@ void CTriggerSequence::ExecuteSoundOrSpeech(char* soundName, char* speakerName, 
 	if (soundName)
 	{
 		if (speakerName && strcmp("none", speakerName))
-			CTriggerSequence::ExecuteSpeech(soundName, speakerName, listenerName, duration);
+			ExecuteSpeech(soundName, speakerName, listenerName, duration);
 		else
 			ExecuteSound(soundName);
 	}
