@@ -554,7 +554,6 @@ void EV_FireShotGunDouble( event_args_t *args )
 	vec3_t vecSrc, vecAiming;
 	vec3_t vecSpread;
 	vec3_t up, right, forward;
-	float flSpread = 0.01;
 
 	idx = args->entindex;
 	VectorCopy( args->origin, origin );
@@ -608,7 +607,6 @@ void EV_FireShotGunSingle( event_args_t *args )
 	vec3_t vecSrc, vecAiming;
 	vec3_t vecSpread;
 	vec3_t up, right, forward;
-	float flSpread = 0.01;
 
 	idx = args->entindex;
 	VectorCopy( args->origin, origin );
@@ -665,7 +663,6 @@ void EV_FireMP5( event_args_t *args )
 	int shell;
 	vec3_t vecSrc, vecAiming;
 	vec3_t up, right, forward;
-	float flSpread = 0.01;
 
 	idx = args->entindex;
 	VectorCopy( args->origin, origin );
@@ -755,7 +752,6 @@ void EV_FirePython( event_args_t *args )
 
 	vec3_t vecSrc, vecAiming;
 	vec3_t up, right, forward;
-	float flSpread = 0.01;
 
 	idx = args->entindex;
 	VectorCopy( args->origin, origin );
@@ -846,16 +842,13 @@ void EV_FireGauss( event_args_t *args )
 	vec3_t angles;
 	vec3_t velocity;
 	float flDamage = args->fparam1;
-	int primaryfire = args->bparam1;
 
 	int m_fPrimaryFire = args->bparam1;
-	int m_iWeaponVolume = GAUSS_PRIMARY_FIRE_VOLUME;
 	vec3_t vecSrc;
 	vec3_t vecDest;
 	edict_t		*pentIgnore;
 	pmtrace_t tr, beam_tr;
 	float flMaxFrac = 1.0;
-	int	nTotal = 0;
 	int fHasPunched = 0;
 	int fFirstBeam = 1;
 	int	nMaxHits = 10;
@@ -1036,7 +1029,7 @@ void EV_FireGauss( event_args_t *args )
 					if ( !beam_tr.allsolid )
 					{
 						vec3_t delta;
-						float n;
+						//float n; // SLART: Creates a shadowing error
 
 						// trace backwards to find exit point
 
@@ -1417,7 +1410,7 @@ void EV_EgonFire( event_args_t *args )
 
 	if ( iStartup == 1 && EV_IsLocal( idx ) && !pBeam && !pBeam2 && cl_lw->value ) //Adrian: Added the cl_lw check for those lital people that hate weapon prediction.
 	{
-		vec3_t vecSrc, vecEnd, origin, angles, forward, right, up;
+		vec3_t vecSrc, vecEnd, angles, forward, right, up;
 		pmtrace_t tr;
 
 		cl_entity_t *pl = gEngfuncs.GetEntityByIndex( idx );

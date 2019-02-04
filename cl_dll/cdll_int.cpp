@@ -103,7 +103,8 @@ int	DLLEXPORT HUD_ConnectionlessPacket( const struct netadr_s *net_from, const c
 //	RecClConnectionlessPacket(net_from, args, response_buffer, response_buffer_size);
 
 	// Parse stuff from args
-	int max_buffer_size = *response_buffer_size;
+	// SLART: Is this not needed? It creates an error in MSVC
+	//int max_buffer_size = *response_buffer_size;
 
 	// Zero it out since we aren't going to respond.
 	// If we wanted to response, we'd write data into response_buffer

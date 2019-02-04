@@ -1019,10 +1019,6 @@ StudioMergeBones
 */
 void CStudioModelRenderer::StudioMergeBones ( model_t *m_pSubModel )
 {
-	int					i, j;
-	double				f;
-	int					do_hunt = true;
-
 	mstudiobone_t		*pbones;
 	mstudioseqdesc_t	*pseqdesc;
 	mstudioanim_t		*panim;
@@ -1038,7 +1034,7 @@ void CStudioModelRenderer::StudioMergeBones ( model_t *m_pSubModel )
 
 	pseqdesc = (mstudioseqdesc_t *)((byte *)m_pStudioHeader + m_pStudioHeader->seqindex) + m_pCurrentEntity->curstate.sequence;
 
-	f = StudioEstimateFrame( pseqdesc );
+	double f = StudioEstimateFrame( pseqdesc );
 
 	if (m_pCurrentEntity->latched.prevframe > f)
 	{
@@ -1051,8 +1047,9 @@ void CStudioModelRenderer::StudioMergeBones ( model_t *m_pSubModel )
 	pbones = (mstudiobone_t *)((byte *)m_pStudioHeader + m_pStudioHeader->boneindex);
 
 
-	for (i = 0; i < m_pStudioHeader->numbones; i++) 
+	for (int i = 0; i < m_pStudioHeader->numbones; i++) 
 	{
+		int j;
 		for (j = 0; j < m_nCachedBones; j++)
 		{
 			if (stricmp(pbones[i].name, m_nCachedBoneNames[j]) == 0)
