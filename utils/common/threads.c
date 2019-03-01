@@ -141,7 +141,7 @@ void RunThreadsOn (int workcnt, qboolean showpacifier, void(*func)(int))
 	int		threadid[MAX_THREADS];
 	HANDLE	threadhandle[MAX_THREADS];
 	int		i;
-	int		start, end;
+	double	start, end;
 
 	start = I_FloatTime ();
 	dispatch = 0;
@@ -171,7 +171,7 @@ void RunThreadsOn (int workcnt, qboolean showpacifier, void(*func)(int))
 	threaded = false;
 	end = I_FloatTime ();
 	if (pacifier)
-		printf (" (%i)\n", end-start);
+		printf (" (%f)\n", end-start);
 }
 
 

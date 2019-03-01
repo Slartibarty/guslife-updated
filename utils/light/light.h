@@ -27,7 +27,7 @@ typedef struct entity_s
 extern	lightentity_t	lightentities[MAX_MAP_ENTITIES];
 extern	int		numlightentities;
 
-#define	ON_EPSILON	0.1
+//#define	ON_EPSILON	0.1 // SLART: defined in mathlib.h
 
 #define	MAXLIGHTS			1024
 
@@ -39,9 +39,9 @@ void LightLeaf (dleaf_t *leaf);
 
 void MakeTnodes (dmodel_t *bm);
 
-extern	float		scaledist;
+extern	double		scaledist;
 extern	float		scalecos;
-extern	float		rangescale;
+extern	double		rangescale;
 
 extern	int		c_culldistplane, c_proper;
 

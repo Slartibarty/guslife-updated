@@ -50,8 +50,8 @@ extern int myargc;
 extern char **myargv;
 
 void COM_FixSlashes( char *pname );
-char *strupr (char *in);
-char *strlower (char *in);
+char *strupr (char *in); // SLART: What is this
+char *strlower (char *in); // SLART: What is this
 int Q_strncasecmp (char *s1, char *s2, int n);
 int Q_strcasecmp (char *s1, char *s2);
 void Q_getwd (char *out);

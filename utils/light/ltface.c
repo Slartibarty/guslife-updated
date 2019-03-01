@@ -96,7 +96,7 @@ void CalcFaceVectors (lightinfo_t *l)
 	texinfo_t	*tex;
 	int			i, j;
 	vec3_t	texnormal;
-	float	distscale;
+	double	distscale;
 	vec_t	dist, len;
 
 	tex = &texinfo[l->face->texinfo];
@@ -350,7 +350,7 @@ void SingleLightFace (lightentity_t *light, lightinfo_t *l)
 	vec3_t	spotvec;
 	vec_t	falloff;
 	vec3_t	*lightsamp;
-	float	intensity;
+	double	intensity;
 	
 	VectorSubtract (light->origin, bsp_origin, rel);
 	dist = scaledist * (DotProduct (rel, l->facenormal) - l->facedist);
@@ -486,7 +486,7 @@ void FixMinlight (lightinfo_t *l)
 	{
 		for (j=0 ; j<l->numsurfpt ; j++)
 		{
-			float intensity = ( l->lightmaps[i][j][0] + l->lightmaps[i][j][1] + l->lightmaps[i][j][2] ) / 3.0;
+			double intensity = ( l->lightmaps[i][j][0] + l->lightmaps[i][j][1] + l->lightmaps[i][j][2] ) / 3.0;
 
 			if ( intensity < minlight )
 			{

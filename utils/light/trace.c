@@ -102,10 +102,10 @@ TestLine
 qboolean TestLine (vec3_t start, vec3_t stop)
 {
 	int				node;
-	float			front, back;
+	double			front, back;
 	tracestack_t	*tstack_p;
 	int				side;
-	float 			frontx,fronty, frontz, backx, backy, backz;
+	double 			frontx,fronty, frontz, backx, backy, backz;
 	tracestack_t	tracestack[64];
 	tnode_t			*tnode;
 	

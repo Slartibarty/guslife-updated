@@ -16,9 +16,9 @@ NOTES
 
 */
 
-float		scaledist = 1.0;
+double		scaledist = 1.0;
 float		scalecos = 0.5;
-float		rangescale = 0.5;
+double		rangescale = 0.5;
 
 byte		*filebase, *file_p, *file_end;
 

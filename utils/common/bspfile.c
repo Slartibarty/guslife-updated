@@ -467,7 +467,7 @@ void	WriteBSPFile (char *filename)
 
 ArrayUsage( char *szItem, int items, int maxitems, int itemsize )
 {
-	float	percentage = maxitems ? items * 100.0 / maxitems : 0.0;
+	double	percentage = maxitems ? items * 100.0 / maxitems : 0.0;
 
     printf("%-12s  %7i/%-7i  %7i/%-7i  (%4.1f%%)", 
 		   szItem, items, maxitems, items * itemsize, maxitems * itemsize, percentage );
@@ -484,7 +484,7 @@ ArrayUsage( char *szItem, int items, int maxitems, int itemsize )
 
 GlobUsage( char *szItem, int itemstorage, int maxstorage )
 {
-	float	percentage = maxstorage ? itemstorage * 100.0 / maxstorage : 0.0;
+	double	percentage = maxstorage ? itemstorage * 100.0 / maxstorage : 0.0;
     printf("%-12s     [variable]    %7i/%-7i  (%4.1f%%)", 
 		   szItem, itemstorage, maxstorage, percentage );
 	if ( percentage > 80.0 )
